@@ -27,4 +27,9 @@ public class APIKeyService {
     public APIKeyEntity getApiKey(String applicationName) {
         return apiKeyRepo.findByApplicationName(applicationName).orElseThrow();
     }
+
+    public boolean verify(String apiKey) {
+        System.out.println(this.provider.getApplicationName(apiKey));
+        return Objects.nonNull(this.apiKeyRepo.findByApiKey(apiKey).orElse(null));
+    }
 }

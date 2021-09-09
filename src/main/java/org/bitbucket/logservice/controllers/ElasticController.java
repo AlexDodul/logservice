@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -37,6 +38,14 @@ public class ElasticController {
         Pageable pageable = PageRequest.of(page, size);
         List<ElasticEntity> result = this.elasticService.readAllByKeyWords(keyWordsRequest.getKeywords(), pageable);
         return ResponseEntity.ok(TransferObject.toLogResponse(result));
+    }
+
+    @GetMapping
+    public ResponseEntity<Object> getAll() {
+        Date date = new Date();
+        List<ElasticEntity> ok = (this.elasticService.findAll());
+        System.out.println(System.currentTimeMillis() - date.getTime());
+        return ResponseEntity.ok(ok);
     }
 
     @PostMapping("/save")
