@@ -11,5 +11,4 @@ public interface ElasticsearchRepo extends ElasticsearchRepository<ElasticEntity
     List<ElasticEntity> findAllByKeyWords(List<String> keyWords, Pageable pageable);
 
     List<ElasticEntity> findAll();
-
 }
