@@ -30,8 +30,6 @@ public class ElasticController {
     private final APIKeyService apiKeyService;
     private final APIKeyProvider apiKeyProvider;
 
-    String keyWords = "kryurtyuh7pol65tru reui rt iretu";
-
     private final CsvExportService csvExportService;
 
     @GetMapping("/keywords")
@@ -41,28 +39,12 @@ public class ElasticController {
         return ResponseEntity.ok(TransferObject.toLogResponse(result));
     }
 
-    /*@PostMapping
-    public ResponseEntity<Object> saveLog(@RequestBody LogRequest request) {
-        Date date = new Date();
-        for (int i = 0; i < 1000; i++) {
-            if (i % 10 == 0) {
-                keyWords = "infoService";
-            } else if (i % 9 == 0) {
-                keyWords = "infoService Alex data";
-            } else {
-                keyWords = "dfjghj dsfgh dsfg dfghjoiuyeig dfujh";
-            }
-            this.elasticService.create(new ElasticEntity(List.of(keyWords.split(" ")), RandomString.make(128)));
-        }
-        return ResponseEntity.ok(new Date().getTime() - date.getTime());
-    }*/
-
-    @PostMapping
+    @PostMapping("/save")
     public ResponseEntity<Object> createLog(@RequestBody BodyLogRequest bodyLogRequest) {
         return ResponseEntity.ok(elasticService.createElasticEntity(TransferObject.toElasticEntity(bodyLogRequest)));
     }
 
-    @PostMapping("/save")
+    @PostMapping("/save/list")
     public void insertBulk(@RequestBody List<ElasticEntity> elasticEntity) {
         elasticService.insertBulk(elasticEntity);
     }
