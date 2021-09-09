@@ -12,6 +12,7 @@ import org.springframework.data.elasticsearch.core.query.IndexQueryBuilder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Locale;
 
 @Service
 @RequiredArgsConstructor
@@ -50,7 +51,6 @@ public class ElasticService {
         IndexQuery indexQuery = new IndexQueryBuilder()
                 .withId(entity.getId())
                 .withObject(entity).build();
-
-        elasticsearchOperations.index(indexQuery, IndexCoordinates.of(entity.getApplicationName()));
+        elasticsearchOperations.index(indexQuery, IndexCoordinates.of(entity.getApplicationName().toLowerCase(Locale.ROOT)));
     }
 }
