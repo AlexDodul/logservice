@@ -67,7 +67,10 @@ public class ElasticController {
 
     @PostMapping("/save")
     public ResponseEntity<Object> createLog(@RequestBody BodyLogRequest bodyLogRequest, HttpServletRequest httpServletRequest) {
-        return ResponseEntity.ok(elasticService.saveLogInTable(TransferObject.toElasticEntity(bodyLogRequest), HttpServletUtils.getCompanyName(httpServletRequest)));
+        return ResponseEntity.ok(elasticService.saveLogInTable(
+            TransferObject.toElasticEntity(bodyLogRequest),
+            HttpServletUtils.getCompanyName(httpServletRequest))
+        );
     }
 
     @PostMapping("/save/list")
@@ -77,13 +80,13 @@ public class ElasticController {
 
     @PostMapping("/generate-api-key")
     public ResponseEntity<Object> generateApiKey(@RequestBody ApplicationNameRequest applicationNameRequest) {
-        APIKeyEntity apiKey = this.apiKeyService.createApiKey(applicationNameRequest);
+        APIKeyEntity apiKey = apiKeyService.createApiKey(applicationNameRequest);
         return ResponseEntity.ok(new APIKeyResponse(apiKey.getApiKey()));
     }
 
     @DeleteMapping
     public void deleteAll() {
-        this.elasticService.deleteAll();
+        elasticService.deleteAll();
     }
 
     @RequestMapping(path = "/csv")
@@ -94,7 +97,7 @@ public class ElasticController {
         @RequestHeader(name = "X-Api-Key") String apiKey
     ) throws IOException {
         servletResponse.setContentType("text/csv");
-        servletResponse.addHeader("Content-Disposition", "attachment; filename=\"app-name-2021-09-05.csv\"");
+        servletResponse.addHeader("Content-Disposition", "attachment; filename=" + '"' + apiKeyProvider.getApplicationName(apiKey) + ".csv" + '"');
         csvExportService.writeEmployeesToCsv(servletResponse.getWriter(), pageable, keyWordsRequest, apiKey);
     }
 }
