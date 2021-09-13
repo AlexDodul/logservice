@@ -49,7 +49,7 @@ public class ElasticController {
         HttpServletRequest httpServletRequest
     ) {
         Pageable pageable = PageRequest.of(page, size);
-        List<ElasticEntity> result = this.elasticService.readAllByKeyWords(
+        List<ElasticEntity> result = elasticService.readAllByKeyWords(
             keyWordsRequest.getKeywords(),
             pageable,
             HttpServletUtils.getCompanyName(httpServletRequest)
@@ -60,7 +60,7 @@ public class ElasticController {
     @GetMapping
     public ResponseEntity<Object> getAll() {
         Date date = new Date();
-        List<ElasticEntity> ok = (this.elasticService.findAll());
+        List<ElasticEntity> ok = (elasticService.findAll());
         System.out.println(System.currentTimeMillis() - date.getTime());
         return ResponseEntity.ok(ok);
     }
