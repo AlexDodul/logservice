@@ -1,31 +1,33 @@
 package org.bitbucket.logservice.security;
 
-import io.jsonwebtoken.*;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.SignatureException;
 import java.util.Date;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class APIKeyProvider {
+public class ApiKeyProvider {
 
-    @Value("{app.security.secret-key}")
-    private String SECRET_KEY;
+//    @Value("{app.security.secret-key}")
+    private static final String SECRET_KEY = "SecretKeyGrizzly";
 
-    public String generateAPIKey(String applicationName) {
+    public String generateApiKey(String applicationName) {
         return Jwts.builder()
                 .setSubject(applicationName)
                 .setIssuedAt(new Date())
-                .signWith(SignatureAlgorithm.HS512, this.SECRET_KEY)
+                .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
                 .compact();
     }
 
-    public boolean validateAPIKey(String apiKey) {
+    public boolean validateApiKey(String apiKey) {
         try {
             Jwts.parser()
-                    .setSigningKey(this.SECRET_KEY)
+                    .setSigningKey(SECRET_KEY)
                     .parseClaimsJws(apiKey);
             return true;
         } catch (SignatureException | MalformedJwtException | IllegalArgumentException e) {
@@ -36,7 +38,7 @@ public class APIKeyProvider {
 
     public String getApplicationName(String apiKey) {
         Claims body = Jwts.parser()
-                .setSigningKey(this.SECRET_KEY)
+                .setSigningKey(SECRET_KEY)
                 .parseClaimsJws(apiKey)
                 .getBody();
         return body.getSubject();
