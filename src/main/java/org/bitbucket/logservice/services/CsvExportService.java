@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.bitbucket.logservice.entity.ElasticEntity;
-import org.bitbucket.logservice.payload.request.KeyWordsRequest;
+import org.bitbucket.logservice.payload.request.FilterRequest;
 import org.bitbucket.logservice.repositories.ElasticsearchRepo;
 import org.bitbucket.logservice.security.ApiKeyProvider;
 import org.springframework.data.domain.Pageable;
@@ -19,22 +19,25 @@ public class CsvExportService {
 
     private final ElasticsearchRepo elasticsearchRepo;
 
+    private final ElasticService elasticService;
+
     private final ApiKeyProvider apiKeyProvider;
 
     public CsvExportService(ElasticsearchRepo elasticsearchRepo,
+                            ElasticService elasticService,
                             ApiKeyProvider apiKeyProvider) {
         this.elasticsearchRepo = elasticsearchRepo;
+        this.elasticService = elasticService;
         this.apiKeyProvider = apiKeyProvider;
     }
 
-    public void writeEmployeesToCsv(Writer writer, Pageable pageable, KeyWordsRequest keyWordsRequest, String apiKey) {
+    public void writeEmployeesToCsv(Writer writer, Pageable pageable, /*KeyWordsRequest keyWordsRequest*/
+                                    FilterRequest filterRequest, String apiKey) {
         String applicationName = apiKeyProvider.getApplicationName(apiKey);
-        List<ElasticEntity> elasticEntities = elasticsearchRepo.findAllByKeyWordsAndApplicationName(keyWordsRequest.getKeywords(), applicationName, pageable);
+        List<ElasticEntity> elasticEntities = elasticService.readAllByKeyWordsAndDate(filterRequest, pageable,  applicationName);
         try (CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT)) {
             for (ElasticEntity elasticEntity : elasticEntities) {
                 csvPrinter.printRecord(
-                        elasticEntity.getApplicationName(),
-                        elasticEntity.getCreatedAt(),
                         elasticEntity.getKeyWords(),
                         elasticEntity.getBodyLog()
                         );

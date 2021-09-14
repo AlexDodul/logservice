@@ -122,13 +122,13 @@ public class ElasticController {
   public void getAllEmployeesInCsv(
       HttpServletResponse servletResponse,
       @PageableDefault(size = 20) Pageable pageable,
-      @RequestBody KeyWordsRequest keyWordsRequest,
+      @RequestBody FilterRequest filterRequest,
       @RequestHeader(name = "X-Api-Key") String apiKey
   ) throws IOException {
     servletResponse.setContentType("text/csv");
     servletResponse.addHeader("Content-Disposition",
         "attachment; filename=" + '"' + apiKeyProvider.getApplicationName(apiKey) + ".csv" + '"');
     csvExportService
-        .writeEmployeesToCsv(servletResponse.getWriter(), pageable, keyWordsRequest, apiKey);
+        .writeEmployeesToCsv(servletResponse.getWriter(), pageable, filterRequest, apiKey);
   }
 }
