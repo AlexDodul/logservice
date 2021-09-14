@@ -90,7 +90,7 @@ public class ElasticController {
     return ResponseEntity.ok(new ApiKeyResponse(apiKey.getApiKey()));
   }
 
-  @RequestMapping(path = "/csv")
+  @GetMapping(path = "/csv")
   public void getAllEmployeesInCsv(
       HttpServletResponse servletResponse,
       @PageableDefault(size = 20) Pageable pageable,
