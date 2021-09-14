@@ -6,7 +6,6 @@ import org.bitbucket.logservice.entity.ElasticEntity;
 import org.bitbucket.logservice.payload.request.FilterRequest;
 import org.bitbucket.logservice.repositories.ElasticsearchRepo;
 import org.bitbucket.logservice.utils.DateUtils;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -70,24 +69,8 @@ public class ElasticService {
     elasticsearchRepo.deleteAll();
   }
 
-  public Page<ElasticEntity> findAllPageable(Pageable pageable) {
-    return elasticsearchRepo.findAll(pageable);
-  }
-
-  public List<ElasticEntity> findAll() {
-    return elasticsearchRepo.findAll();
-  }
-
-  public Iterable<ElasticEntity> saveListOfLogs(List<ElasticEntity> elasticEntity) {
-    return elasticsearchRepo.saveAll(elasticEntity);
-  }
-
   public ElasticEntity saveLogInTable(ElasticEntity elasticEntity, String appName) {
     elasticEntity.setApplicationName(appName);
     return elasticsearchRepo.save(elasticEntity);
-  }
-
-  public List<ElasticEntity> findAllByDate(String at, String to) {
-    return elasticsearchRepo.findAllByCreatedAtBetween(at, to);
   }
 }

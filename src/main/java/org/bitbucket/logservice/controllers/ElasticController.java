@@ -1,7 +1,6 @@
 package org.bitbucket.logservice.controllers;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -75,23 +74,6 @@ public class ElasticController {
     return ResponseEntity.ok(TransferObject.toLogResponse(result));
   }
 
-  @GetMapping("/filter/param")
-  public ResponseEntity<Object> searchByDate(
-      @RequestParam String at,
-      @RequestParam String to
-  ) {
-    List<ElasticEntity> allByDate = elasticService.findAllByDate(at, to);
-    return ResponseEntity.ok(allByDate);
-  }
-
-  @GetMapping
-  public ResponseEntity<Object> searchAllLogs() {
-    Date date = new Date();
-    List<ElasticEntity> ok = (elasticService.findAll());
-    System.out.println(System.currentTimeMillis() - date.getTime());
-    return ResponseEntity.ok(ok);
-  }
-
   @PostMapping("/save")
   public ResponseEntity<Object> saveLogInTable(@RequestBody BodyLogRequest bodyLogRequest,
                                                HttpServletRequest httpServletRequest) {
@@ -101,21 +83,11 @@ public class ElasticController {
     );
   }
 
-  @PostMapping("/save/list")
-  public void saveListOfLogs(@RequestBody List<ElasticEntity> elasticEntity) {
-    elasticService.saveListOfLogs(elasticEntity);
-  }
-
   @PostMapping("/generate-api-key")
   public ResponseEntity<Object> generateApiKey(
       @Valid @RequestBody ApplicationNameRequest applicationNameRequest) {
     ApiKeyEntity apiKey = apiKeyService.createApiKey(applicationNameRequest);
     return ResponseEntity.ok(new ApiKeyResponse(apiKey.getApiKey()));
-  }
-
-  @DeleteMapping
-  public void deleteAll() {
-    elasticService.deleteAll();
   }
 
   @RequestMapping(path = "/csv")
@@ -130,5 +102,10 @@ public class ElasticController {
         "attachment; filename=" + '"' + apiKeyProvider.getApplicationName(apiKey) + ".csv" + '"');
     csvExportService
         .writeEmployeesToCsv(servletResponse.getWriter(), pageable, filterRequest, apiKey);
+  }
+
+  @DeleteMapping
+  public void deleteAll() {
+    elasticService.deleteAll();
   }
 }

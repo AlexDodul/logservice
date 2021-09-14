@@ -15,11 +15,6 @@ public interface ElasticsearchRepo extends ElasticsearchRepository<ElasticEntity
 
   List<ElasticEntity> findAll();
 
-  List<ElasticEntity> findAllByCreatedAtBetween(
-      String createdAtFrom,
-      String createdAtTo
-  );
-
   List<ElasticEntity> findAllByCreatedAtBetweenAndApplicationName(
       String createdAtFrom,
       String createdAtTo,
