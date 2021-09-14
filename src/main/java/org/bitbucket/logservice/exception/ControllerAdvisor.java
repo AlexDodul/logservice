@@ -25,7 +25,13 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
       MethodArgumentNotValidException ex,
       HttpHeaders headers,
       HttpStatus status,
-      WebRequest request) {
+      WebRequest request
+  ) {
     return ResponseEntity.badRequest().body(ex.getMessage());
+  }
+
+  @ExceptionHandler(value = DateFormatException.class)
+  public ResponseEntity<Object> handleDateFormatException(DateFormatException e){
+    return ResponseEntity.status(e.getStatusCode()).body(e.getMessage());
   }
 }

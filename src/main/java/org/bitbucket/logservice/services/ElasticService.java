@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.bitbucket.logservice.entity.ElasticEntity;
 import org.bitbucket.logservice.payload.request.FilterRequest;
 import org.bitbucket.logservice.repositories.ElasticsearchRepo;
+import org.bitbucket.logservice.utils.DateUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -26,8 +27,8 @@ public class ElasticService {
       String appName
   ) {
     List<String> keywords = filterRequest.getKeywords();
-    String createdAtFrom = filterRequest.getCreatedAtFrom();
-    String createdAtTo = filterRequest.getCreatedAtTo();
+    String createdAtFrom = DateUtils.convertToEpoch(filterRequest.getCreatedAtFrom());
+    String createdAtTo = DateUtils.convertToEpoch(filterRequest.getCreatedAtTo());
 
     if (createdAtFrom != null && createdAtTo != null && keywords != null) {
       return elasticsearchRepo.findAllByCreatedAtBetweenAndKeyWordsAndApplicationName(
