@@ -1,7 +1,7 @@
 package org.bitbucket.logservice.security;
 
 import lombok.RequiredArgsConstructor;
-import org.bitbucket.logservice.services.APIKeyService;
+import org.bitbucket.logservice.services.ApiKeyService;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -20,7 +20,7 @@ public class APISecurityConfig extends WebSecurityConfigurerAdapter {
 
     private String principalRequestHeader = "X-Api-Key";
 
-    private final APIKeyService apiKeyService;
+    private final ApiKeyService apiKeyService;
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
@@ -31,7 +31,7 @@ public class APISecurityConfig extends WebSecurityConfigurerAdapter {
             public Authentication authenticate(Authentication authentication) throws AuthenticationException {
                 String principal = String.valueOf(authentication.getPrincipal());
                 System.out.println("principal" + principal);
-                if (!apiKeyService.verify(principal)) {
+                if (!apiKeyService.verification(principal)) {
                     throw new BadCredentialsException("The API key was not found or not the expected value.");
                 }
 

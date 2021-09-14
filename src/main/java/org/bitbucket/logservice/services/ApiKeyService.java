@@ -11,15 +11,15 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class APIKeyService {
+public class ApiKeyService {
     private final APIKeyRepo apiKeyRepo;
     private final ApiKeyProvider provider;
 
     public APIKeyEntity createApiKey(ApplicationNameRequest applicationNameRequest) {
-        if (Objects.nonNull(this.apiKeyRepo.findByApplicationName(applicationNameRequest.getApplicationName()).orElse(null))) {
+        if (Objects.nonNull(apiKeyRepo.findByApplicationName(applicationNameRequest.getApplicationName()).orElse(null))) {
             throw new EntityExistException("Token exists");
         }
-        String apiKey = this.provider.generateApiKey(applicationNameRequest.getApplicationName());
+        String apiKey = provider.generateApiKey(applicationNameRequest.getApplicationName());
         return apiKeyRepo.save(new APIKeyEntity(applicationNameRequest.getApplicationName(), apiKey));
     }
 
@@ -27,8 +27,8 @@ public class APIKeyService {
         return apiKeyRepo.findByApplicationName(applicationName).orElseThrow();
     }
 
-    public boolean verify(String apiKey) {
-        System.out.println(this.provider.getApplicationName(apiKey));
-        return Objects.nonNull(this.apiKeyRepo.findByApiKey(apiKey).orElse(null));
+    public boolean verification(String apiKey) {
+        System.out.println(provider.getApplicationName(apiKey));
+        return Objects.nonNull(apiKeyRepo.findByApiKey(apiKey).orElse(null));
     }
 }

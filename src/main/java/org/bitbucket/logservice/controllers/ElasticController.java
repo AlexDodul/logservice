@@ -5,15 +5,17 @@ import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.bitbucket.logservice.entity.APIKeyEntity;
 import org.bitbucket.logservice.entity.ElasticEntity;
 import org.bitbucket.logservice.payload.request.ApplicationNameRequest;
 import org.bitbucket.logservice.payload.request.BodyLogRequest;
+import org.bitbucket.logservice.payload.request.FilterRequest;
 import org.bitbucket.logservice.payload.request.KeyWordsRequest;
 import org.bitbucket.logservice.payload.response.APIKeyResponse;
 import org.bitbucket.logservice.security.ApiKeyProvider;
-import org.bitbucket.logservice.services.APIKeyService;
+import org.bitbucket.logservice.services.ApiKeyService;
 import org.bitbucket.logservice.services.CsvExportService;
 import org.bitbucket.logservice.services.ElasticService;
 import org.bitbucket.logservice.utils.HttpServletUtils;
@@ -35,69 +37,98 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/elastic")
 public class ElasticController {
-    private final ElasticService elasticService;
-    private final APIKeyService apiKeyService;
-    private final ApiKeyProvider apiKeyProvider;
+  private final ElasticService elasticService;
+  private final ApiKeyService apiKeyService;
+  private final ApiKeyProvider apiKeyProvider;
 
-    private final CsvExportService csvExportService;
+  private final CsvExportService csvExportService;
 
-    @GetMapping("/keywords")
-    public ResponseEntity<Object> searchByKeywords(
-        @RequestBody KeyWordsRequest keyWordsRequest,
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "20") int size,
-        HttpServletRequest httpServletRequest
-    ) {
-        Pageable pageable = PageRequest.of(page, size);
-        List<ElasticEntity> result = elasticService.readAllByKeyWords(
-            keyWordsRequest.getKeywords(),
-            pageable,
-            HttpServletUtils.getCompanyName(httpServletRequest)
-        );
-        return ResponseEntity.ok(TransferObject.toLogResponse(result));
-    }
+  @GetMapping("/keywords")
+  public ResponseEntity<Object> searchByKeywords(
+      @RequestBody KeyWordsRequest keyWordsRequest,
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "20") int size,
+      HttpServletRequest httpServletRequest
+  ) {
+    Pageable pageable = PageRequest.of(page, size);
+    List<ElasticEntity> result = elasticService.readAllByKeyWords(
+        keyWordsRequest.getKeywords(),
+        pageable,
+        HttpServletUtils.getCompanyName(httpServletRequest)
+    );
+    return ResponseEntity.ok(TransferObject.toLogResponse(result));
+  }
 
-    @GetMapping
-    public ResponseEntity<Object> getAll() {
-        Date date = new Date();
-        List<ElasticEntity> ok = (elasticService.findAll());
-        System.out.println(System.currentTimeMillis() - date.getTime());
-        return ResponseEntity.ok(ok);
-    }
+  @GetMapping("/filter")
+  public ResponseEntity<Object> searchByFilter(
+      @RequestBody FilterRequest filterRequest,
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "20") int size,
+      HttpServletRequest httpServletRequest
+  ) {
+    Pageable pageable = PageRequest.of(page, size);
+    List<ElasticEntity> result = elasticService.readAllByKeyWordsAndDate(
+        filterRequest,
+        pageable,
+        HttpServletUtils.getCompanyName(httpServletRequest)
+    );
+    return ResponseEntity.ok(TransferObject.toLogResponse(result));
+  }
 
-    @PostMapping("/save")
-    public ResponseEntity<Object> createLog(@RequestBody BodyLogRequest bodyLogRequest, HttpServletRequest httpServletRequest) {
-        return ResponseEntity.ok(elasticService.saveLogInTable(
-            TransferObject.toElasticEntity(bodyLogRequest),
-            HttpServletUtils.getCompanyName(httpServletRequest))
-        );
-    }
+  @GetMapping("/filter/param")
+  public ResponseEntity<Object> searchByDate(
+      @RequestParam String at,
+      @RequestParam String to
+  ) {
+    List<ElasticEntity> allByDate = elasticService.findAllByDate(at, to);
+    return ResponseEntity.ok(allByDate);
+  }
 
-    @PostMapping("/save/list")
-    public void insertBulk(@RequestBody List<ElasticEntity> elasticEntity) {
-        elasticService.saveListOfLogs(elasticEntity);
-    }
+  @GetMapping
+  public ResponseEntity<Object> searchAllLogs() {
+    Date date = new Date();
+    List<ElasticEntity> ok = (elasticService.findAll());
+    System.out.println(System.currentTimeMillis() - date.getTime());
+    return ResponseEntity.ok(ok);
+  }
 
-    @PostMapping("/generate-api-key")
-    public ResponseEntity<Object> generateApiKey(@RequestBody ApplicationNameRequest applicationNameRequest) {
-        APIKeyEntity apiKey = apiKeyService.createApiKey(applicationNameRequest);
-        return ResponseEntity.ok(new APIKeyResponse(apiKey.getApiKey()));
-    }
+  @PostMapping("/save")
+  public ResponseEntity<Object> saveLogInTable(@RequestBody BodyLogRequest bodyLogRequest,
+                                               HttpServletRequest httpServletRequest) {
+    return ResponseEntity.ok(elasticService.saveLogInTable(
+        TransferObject.toElasticEntity(bodyLogRequest),
+        HttpServletUtils.getCompanyName(httpServletRequest))
+    );
+  }
 
-    @DeleteMapping
-    public void deleteAll() {
-        elasticService.deleteAll();
-    }
+  @PostMapping("/save/list")
+  public void saveListOfLogs(@RequestBody List<ElasticEntity> elasticEntity) {
+    elasticService.saveListOfLogs(elasticEntity);
+  }
 
-    @RequestMapping(path = "/csv")
-    public void getAllEmployeesInCsv(
-        HttpServletResponse servletResponse,
-        @PageableDefault(size = 20) Pageable pageable,
-        @RequestBody KeyWordsRequest keyWordsRequest,
-        @RequestHeader(name = "X-Api-Key") String apiKey
-    ) throws IOException {
-        servletResponse.setContentType("text/csv");
-        servletResponse.addHeader("Content-Disposition", "attachment; filename=" + '"' + apiKeyProvider.getApplicationName(apiKey) + ".csv" + '"');
-        csvExportService.writeEmployeesToCsv(servletResponse.getWriter(), pageable, keyWordsRequest, apiKey);
-    }
+  @PostMapping("/generate-api-key")
+  public ResponseEntity<Object> generateApiKey(
+      @Valid @RequestBody ApplicationNameRequest applicationNameRequest) {
+    APIKeyEntity apiKey = apiKeyService.createApiKey(applicationNameRequest);
+    return ResponseEntity.ok(new APIKeyResponse(apiKey.getApiKey()));
+  }
+
+  @DeleteMapping
+  public void deleteAll() {
+    elasticService.deleteAll();
+  }
+
+  @RequestMapping(path = "/csv")
+  public void getAllEmployeesInCsv(
+      HttpServletResponse servletResponse,
+      @PageableDefault(size = 20) Pageable pageable,
+      @RequestBody KeyWordsRequest keyWordsRequest,
+      @RequestHeader(name = "X-Api-Key") String apiKey
+  ) throws IOException {
+    servletResponse.setContentType("text/csv");
+    servletResponse.addHeader("Content-Disposition",
+        "attachment; filename=" + '"' + apiKeyProvider.getApplicationName(apiKey) + ".csv" + '"');
+    csvExportService
+        .writeEmployeesToCsv(servletResponse.getWriter(), pageable, keyWordsRequest, apiKey);
+  }
 }

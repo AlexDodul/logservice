@@ -1,12 +1,11 @@
 package org.bitbucket.logservice.entity;
 
+import java.util.Date;
+import javax.persistence.Id;
 import lombok.Data;
 import org.elasticsearch.index.VersionType;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-
-import javax.persistence.Id;
-import java.util.Date;
 
 @Data
 @Document(indexName = "api-key", versionType = VersionType.INTERNAL)

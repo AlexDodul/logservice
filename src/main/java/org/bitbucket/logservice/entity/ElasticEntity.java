@@ -1,13 +1,13 @@
 package org.bitbucket.logservice.entity;
 
+import java.util.List;
+import javax.persistence.Id;
+import javax.validation.constraints.Min;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.elasticsearch.index.VersionType;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-
-import javax.persistence.Id;
-import java.util.List;
 
 @Document(indexName = "elastic_data", versionType = VersionType.INTERNAL)
 @Data
@@ -21,6 +21,7 @@ public class ElasticEntity {
     private String createdAt;
 
     @Field
+    @Min(4)
     private String applicationName;
 
     @Field
