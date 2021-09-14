@@ -5,5 +5,5 @@ import lombok.Data;
 
 @Data
 public class KeyWordsRequest {
-    private List<String> keywords;
+  private List<String> keywords;
 }

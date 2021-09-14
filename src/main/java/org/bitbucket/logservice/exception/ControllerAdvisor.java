@@ -14,18 +14,18 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class ControllerAdvisor extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(value = EntityExistException.class)
-    public ResponseEntity<Object>handleEntityExistException(EntityExistException ex){
-        log.error(ex.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
-    }
+  @ExceptionHandler(value = EntityExistException.class)
+  public ResponseEntity<Object> handleEntityExistException(EntityExistException ex) {
+    log.error(ex.getMessage());
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+  }
 
-    @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(
-        MethodArgumentNotValidException ex,
-        HttpHeaders headers,
-        HttpStatus status,
-        WebRequest request) {
-        return ResponseEntity.badRequest().body(ex.getMessage());
-    }
+  @Override
+  protected ResponseEntity<Object> handleMethodArgumentNotValid(
+      MethodArgumentNotValidException ex,
+      HttpHeaders headers,
+      HttpStatus status,
+      WebRequest request) {
+    return ResponseEntity.badRequest().body(ex.getMessage());
+  }
 }

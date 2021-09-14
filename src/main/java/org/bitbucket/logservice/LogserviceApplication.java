@@ -11,8 +11,8 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @EnableElasticsearchRepositories(basePackages = "org.bitbucket.logservice.repositories")
 public class LogserviceApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(LogserviceApplication.class, args);
-    }
+  public static void main(String[] args) {
+    SpringApplication.run(LogserviceApplication.class, args);
+  }
 
 }

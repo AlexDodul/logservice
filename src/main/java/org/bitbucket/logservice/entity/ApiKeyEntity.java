@@ -9,22 +9,22 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 @Data
 @Document(indexName = "api-key", versionType = VersionType.INTERNAL)
-public class APIKeyEntity {
+public class ApiKeyEntity {
 
-    @Id
-    private String id;
+  @Id
+  private String id;
 
-    @Field
-    private Date createdAt = new Date();
+  @Field
+  private Date createdAt = new Date();
 
-    @Field
-    private String applicationName;
+  @Field
+  private String applicationName;
 
-    @Field
-    private String apiKey;
+  @Field
+  private String apiKey;
 
-    public APIKeyEntity(String applicationName, String apiKey) {
-        this.applicationName = applicationName;
-        this.apiKey = apiKey;
-    }
+  public ApiKeyEntity(String applicationName, String apiKey) {
+    this.applicationName = applicationName;
+    this.apiKey = apiKey;
+  }
 }

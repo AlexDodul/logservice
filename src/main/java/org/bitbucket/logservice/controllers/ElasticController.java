@@ -7,13 +7,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.bitbucket.logservice.entity.APIKeyEntity;
+import org.bitbucket.logservice.entity.ApiKeyEntity;
 import org.bitbucket.logservice.entity.ElasticEntity;
 import org.bitbucket.logservice.payload.request.ApplicationNameRequest;
 import org.bitbucket.logservice.payload.request.BodyLogRequest;
 import org.bitbucket.logservice.payload.request.FilterRequest;
 import org.bitbucket.logservice.payload.request.KeyWordsRequest;
-import org.bitbucket.logservice.payload.response.APIKeyResponse;
+import org.bitbucket.logservice.payload.response.ApiKeyResponse;
 import org.bitbucket.logservice.security.ApiKeyProvider;
 import org.bitbucket.logservice.services.ApiKeyService;
 import org.bitbucket.logservice.services.CsvExportService;
@@ -109,8 +109,8 @@ public class ElasticController {
   @PostMapping("/generate-api-key")
   public ResponseEntity<Object> generateApiKey(
       @Valid @RequestBody ApplicationNameRequest applicationNameRequest) {
-    APIKeyEntity apiKey = apiKeyService.createApiKey(applicationNameRequest);
-    return ResponseEntity.ok(new APIKeyResponse(apiKey.getApiKey()));
+    ApiKeyEntity apiKey = apiKeyService.createApiKey(applicationNameRequest);
+    return ResponseEntity.ok(new ApiKeyResponse(apiKey.getApiKey()));
   }
 
   @DeleteMapping

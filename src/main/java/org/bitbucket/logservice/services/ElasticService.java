@@ -7,7 +7,6 @@ import org.bitbucket.logservice.payload.request.FilterRequest;
 import org.bitbucket.logservice.repositories.ElasticsearchRepo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,8 +14,6 @@ import org.springframework.stereotype.Service;
 public class ElasticService {
 
   private final ElasticsearchRepo elasticsearchRepo;
-
-  private final ElasticsearchOperations elasticsearchOperations;
 
   public List<ElasticEntity> readAllByKeyWords(List<String> keyWord, Pageable pageable,
                                                String appName) {

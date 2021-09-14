@@ -13,34 +13,33 @@ import org.springframework.stereotype.Component;
 @Component
 public class ApiKeyProvider {
 
-//    @Value("{app.security.secret-key}")
-    private static final String SECRET_KEY = "SecretKeyGrizzly";
+  private static final String SECRET_KEY = "SecretKeyGrizzly";
 
-    public String generateApiKey(String applicationName) {
-        return Jwts.builder()
-                .setSubject(applicationName)
-                .setIssuedAt(new Date())
-                .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
-                .compact();
-    }
+  public String generateApiKey(String applicationName) {
+    return Jwts.builder()
+        .setSubject(applicationName)
+        .setIssuedAt(new Date())
+        .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
+        .compact();
+  }
 
-    public boolean validateApiKey(String apiKey) {
-        try {
-            Jwts.parser()
-                    .setSigningKey(SECRET_KEY)
-                    .parseClaimsJws(apiKey);
-            return true;
-        } catch (SignatureException | MalformedJwtException | IllegalArgumentException e) {
-            log.error(e.getMessage());
-            return false;
-        }
+  public boolean validateApiKey(String apiKey) {
+    try {
+      Jwts.parser()
+          .setSigningKey(SECRET_KEY)
+          .parseClaimsJws(apiKey);
+      return true;
+    } catch (SignatureException | MalformedJwtException | IllegalArgumentException e) {
+      log.error(e.getMessage());
+      return false;
     }
+  }
 
-    public String getApplicationName(String apiKey) {
-        Claims body = Jwts.parser()
-                .setSigningKey(SECRET_KEY)
-                .parseClaimsJws(apiKey)
-                .getBody();
-        return body.getSubject();
-    }
+  public String getApplicationName(String apiKey) {
+    Claims body = Jwts.parser()
+        .setSigningKey(SECRET_KEY)
+        .parseClaimsJws(apiKey)
+        .getBody();
+    return body.getSubject();
+  }
 }

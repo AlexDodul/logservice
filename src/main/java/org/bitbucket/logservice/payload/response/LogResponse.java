@@ -1,12 +1,12 @@
 package org.bitbucket.logservice.payload.response;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import java.util.List;
 
 @Data
 @AllArgsConstructor
 public class LogResponse {
-    List<String> body;
+
+  List<String> body;
 }
