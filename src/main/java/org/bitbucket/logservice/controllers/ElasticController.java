@@ -1,5 +1,9 @@
 package org.bitbucket.logservice.controllers;
 
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import java.io.IOException;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -35,6 +39,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/elastic")
+@SecurityScheme(
+    type = SecuritySchemeType.APIKEY,
+    name = "X-Api-Key",
+    description = "Access by all methods",
+    in = SecuritySchemeIn.HEADER
+)
 public class ElasticController {
   private final ElasticService elasticService;
   private final ApiKeyService apiKeyService;
@@ -43,6 +53,7 @@ public class ElasticController {
   private final CsvExportService csvExportService;
 
   @GetMapping("/keywords")
+  @SecurityRequirement(name = "X-Api-Key")
   public ResponseEntity<Object> searchByKeywords(
       @RequestBody KeyWordsRequest keyWordsRequest,
       @RequestParam(defaultValue = "0") int page,
@@ -59,6 +70,7 @@ public class ElasticController {
   }
 
   @GetMapping("/filter")
+  @SecurityRequirement(name = "X-Api-Key")
   public ResponseEntity<Object> searchByFilter(
       @RequestBody FilterRequest filterRequest,
       @RequestParam(defaultValue = "0") int page,
@@ -75,6 +87,7 @@ public class ElasticController {
   }
 
   @PostMapping("/save")
+  @SecurityRequirement(name = "X-Api-Key")
   public ResponseEntity<Object> saveLogInTable(@RequestBody BodyLogRequest bodyLogRequest,
                                                HttpServletRequest httpServletRequest) {
     return ResponseEntity.ok(elasticService.saveLogInTable(
@@ -91,6 +104,7 @@ public class ElasticController {
   }
 
   @GetMapping(path = "/csv")
+  @SecurityRequirement(name = "X-Api-Key")
   public void getAllEmployeesInCsv(
       HttpServletResponse servletResponse,
       @PageableDefault(size = 20) Pageable pageable,
