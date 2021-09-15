@@ -1,5 +1,6 @@
 package org.bitbucket.logservice.security;
 
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.bitbucket.logservice.services.ApiKeyService;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +17,7 @@ import org.springframework.security.core.AuthenticationException;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@ApiResponse(description = "")
 public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
 
   private final ApiKeyService apiKeyService;

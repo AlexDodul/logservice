@@ -73,4 +73,8 @@ public class ElasticService {
     elasticEntity.setApplicationName(appName);
     return elasticsearchRepo.save(elasticEntity);
   }
+
+  public List<ElasticEntity> readAllLogs(){
+    return elasticsearchRepo.findAll();
+  }
 }

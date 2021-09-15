@@ -1,7 +1,12 @@
 package org.bitbucket.logservice.controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import java.io.IOException;
@@ -17,6 +22,7 @@ import org.bitbucket.logservice.payload.request.BodyLogRequest;
 import org.bitbucket.logservice.payload.request.FilterRequest;
 import org.bitbucket.logservice.payload.request.KeyWordsRequest;
 import org.bitbucket.logservice.payload.response.ApiKeyResponse;
+import org.bitbucket.logservice.payload.response.LogResponse;
 import org.bitbucket.logservice.security.ApiKeyProvider;
 import org.bitbucket.logservice.services.ApiKeyService;
 import org.bitbucket.logservice.services.CsvExportService;
@@ -26,13 +32,14 @@ import org.bitbucket.logservice.utils.TransferObject;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -52,7 +59,16 @@ public class ElasticController {
 
   private final CsvExportService csvExportService;
 
-  @GetMapping("/keywords")
+
+  @Operation(summary = "Search only by Keywords", description = "Search by keywords only, without using dates")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Search was successful", content = @Content(schema = @Schema(hidden = true))),
+      @ApiResponse(responseCode = "400", description = "Bad request. Check passed parameters", content = @Content(schema = @Schema(hidden = true))),
+      @ApiResponse(responseCode = "403", description = "Forbidden. No access rights. Needed ApiKey", content = @Content(schema = @Schema(hidden = true))),
+      @ApiResponse(responseCode = "404", description = "Not Found. Requested resource was not found.", content = @Content(schema = @Schema(hidden = true))),
+      @ApiResponse(responseCode = "500", description = "Internal Server Error. Some internal error was occurred.", content = @Content(schema = @Schema(hidden = true)))
+  })
+  @PostMapping(value = "/keywords", produces = MediaType.APPLICATION_JSON_VALUE)
   @SecurityRequirement(name = "X-Api-Key")
   public ResponseEntity<Object> searchByKeywords(
       @RequestBody KeyWordsRequest keyWordsRequest,
@@ -69,7 +85,15 @@ public class ElasticController {
     return ResponseEntity.ok(TransferObject.toLogResponse(result));
   }
 
-  @GetMapping("/filter")
+  @Operation(summary = "Search by keywords, dates using pagination", description = "The search is carried out by keywords, dates using pagination. All fields are optional. The company name is substituted automatically. I take information about the company from the apikey, which is in the request header")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Search was successful", content = @Content(schema = @Schema(implementation = LogResponse.class))),
+      @ApiResponse(responseCode = "400", description = "Bad request. Check passed parameters", content = @Content(schema = @Schema(hidden = true))),
+      @ApiResponse(responseCode = "403", description = "Forbidden. No access rights. Needed ApiKey", content = @Content(schema = @Schema(hidden = true))),
+      @ApiResponse(responseCode = "404", description = "Not Found. Requested resource was not found.", content = @Content(schema = @Schema(hidden = true))),
+      @ApiResponse(responseCode = "500", description = "Internal Server Error. Some internal error was occurred.", content = @Content(schema = @Schema(hidden = true)))
+  })
+  @PostMapping("/filter")
   @SecurityRequirement(name = "X-Api-Key")
   public ResponseEntity<Object> searchByFilter(
       @RequestBody FilterRequest filterRequest,
@@ -97,13 +121,13 @@ public class ElasticController {
   }
 
   @PostMapping("/generate-api-key")
-  public ResponseEntity<Object> generateApiKey(
+  public ResponseEntity<ApiKeyResponse> generateApiKey(
       @Valid @RequestBody ApplicationNameRequest applicationNameRequest) {
     ApiKeyEntity apiKey = apiKeyService.createApiKey(applicationNameRequest);
     return ResponseEntity.ok(new ApiKeyResponse(apiKey.getApiKey()));
   }
 
-  @GetMapping(path = "/csv")
+  @PostMapping(path = "/csv")
   @SecurityRequirement(name = "X-Api-Key")
   public void getAllEmployeesInCsv(
       HttpServletResponse servletResponse,
@@ -118,7 +142,15 @@ public class ElasticController {
         .writeEmployeesToCsv(servletResponse.getWriter(), pageable, filterRequest, apiKey);
   }
 
+  @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+  @SecurityRequirement(name = "X-Api-Key")
+  public ResponseEntity<List<ElasticEntity>> allLogs() {
+    List<ElasticEntity> result = elasticService.readAllLogs();
+    return ResponseEntity.ok(result);
+  }
+
   @DeleteMapping
+  @SecurityRequirement(name = "X-Api-Key")
   public void deleteAll() {
     elasticService.deleteAll();
   }
