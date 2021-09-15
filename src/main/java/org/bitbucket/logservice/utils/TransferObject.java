@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
 import org.bitbucket.logservice.entity.ElasticEntity;
 import org.bitbucket.logservice.payload.request.BodyLogRequest;
-import org.bitbucket.logservice.payload.response.LogResponse;
+import org.bitbucket.logservice.payload.response.LogsResponse;
 
 @UtilityClass
 public class TransferObject {
@@ -19,8 +19,8 @@ public class TransferObject {
         );
     }
 
-    public LogResponse toLogResponse(List<ElasticEntity> elasticEntity) {
-        return new LogResponse(
+    public LogsResponse toLogResponse(List<ElasticEntity> elasticEntity) {
+        return new LogsResponse(
                 elasticEntity.stream().map(ElasticEntity::getBodyLog).collect(Collectors.toList())
         );
     }
