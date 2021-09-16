@@ -51,7 +51,7 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Override
   public void configure(WebSecurity web) {
-    web.ignoring().antMatchers("/api/elastic/generate-api-key");
+    web.ignoring().antMatchers("/api/logs/generate-api-key");
     web.ignoring().antMatchers("/swagger-ui/**", "/swagger-ui**", "/v3/api-docs/**");
   }
 }

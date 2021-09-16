@@ -45,7 +45,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/elastic")
+@RequestMapping("/api/logs")
 @SecurityScheme(
     type = SecuritySchemeType.APIKEY,
     name = "X-Api-Key",

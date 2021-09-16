@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class LogRequest {
 
-  private String log;
+  private String bodyLog;
 }

@@ -13,5 +13,5 @@ public class LogResponse {
 
   private List<String> keyWords;
 
-  private String body;
+  private String bodyLog;
 }
