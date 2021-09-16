@@ -6,11 +6,7 @@ import lombok.Data;
 @Data
 public class BodyLogRequest {
 
-  private String createdAt;
+  private List<String> keyWords;
 
-  private String platformName;
-
-  private List<String> keywords;
-
-  private String body;
+  private String bodyLog;
 }

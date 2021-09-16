@@ -3,9 +3,11 @@ package org.bitbucket.logservice.services;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.bitbucket.logservice.entity.ElasticEntity;
+import org.bitbucket.logservice.payload.request.BodyLogRequest;
 import org.bitbucket.logservice.payload.request.FilterRequest;
 import org.bitbucket.logservice.repositories.ElasticsearchRepo;
 import org.bitbucket.logservice.utils.DateUtils;
+import org.bitbucket.logservice.utils.TransferObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -26,8 +28,8 @@ public class ElasticService {
       String appName
   ) {
     List<String> keywords = filterRequest.getKeywords();
-    String createdAtFrom = DateUtils.convertToEpoch(filterRequest.getCreatedAtFrom());
-    String createdAtTo = DateUtils.convertToEpoch(filterRequest.getCreatedAtTo());
+    Long createdAtFrom = DateUtils.convertToEpoch(filterRequest.getCreatedAtFrom());
+    Long createdAtTo = DateUtils.convertToEpoch(filterRequest.getCreatedAtTo());
 
     if (createdAtFrom != null && createdAtTo != null && keywords != null) {
       return elasticsearchRepo.findAllByCreatedAtBetweenAndKeyWordsAndApplicationName(
@@ -69,12 +71,18 @@ public class ElasticService {
     elasticsearchRepo.deleteAll();
   }
 
-  public ElasticEntity saveLogInTable(ElasticEntity elasticEntity, String appName) {
+/*  public ElasticEntity saveLogInTable(ElasticEntity elasticEntity, String appName) {
     elasticEntity.setApplicationName(appName);
     return elasticsearchRepo.save(elasticEntity);
+  }*/
+
+  public ElasticEntity saveLogInTable(BodyLogRequest bodyLogRequest, String appName) {
+    ElasticEntity entity = TransferObject.dtoToEntity(bodyLogRequest);
+    entity.setApplicationName(appName);
+    return elasticsearchRepo.save(entity);
   }
 
-  public List<ElasticEntity> readAllLogs(){
+  public List<ElasticEntity> readAllLogs() {
     return elasticsearchRepo.findAll();
   }
 }

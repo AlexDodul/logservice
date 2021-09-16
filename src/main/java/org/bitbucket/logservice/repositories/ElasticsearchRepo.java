@@ -16,15 +16,15 @@ public interface ElasticsearchRepo extends ElasticsearchRepository<ElasticEntity
   List<ElasticEntity> findAll();
 
   List<ElasticEntity> findAllByCreatedAtBetweenAndApplicationName(
-      String createdAtFrom,
-      String createdAtTo,
+      Long createdAtFrom,
+      Long createdAtTo,
       String applicationName,
       Pageable pageable
   );
 
   List<ElasticEntity> findAllByCreatedAtBetweenAndKeyWordsAndApplicationName(
-      String createdFrom,
-      String createdTo,
+      Long createdFrom,
+      Long createdTo,
       List<String> keyWords,
       String applicationName,
       Pageable pageable
@@ -32,14 +32,14 @@ public interface ElasticsearchRepo extends ElasticsearchRepository<ElasticEntity
 
   List<ElasticEntity> findAllByKeyWordsAndCreatedAtAfterAndApplicationName(
       List<String> keyWords,
-      String createdAtFrom,
+      Long createdAtFrom,
       String applicationName,
       Pageable pageable
   );
 
   List<ElasticEntity> findAllByKeyWordsAndCreatedAtBeforeAndApplicationName(
       List<String> keyWords,
-      String createdAtTo,
+      Long createdAtTo,
       String applicationName,
       Pageable pageable
   );

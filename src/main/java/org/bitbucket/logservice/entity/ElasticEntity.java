@@ -5,6 +5,7 @@ import javax.persistence.Id;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.elasticsearch.index.VersionType;
+import org.joda.time.Instant;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -17,7 +18,7 @@ public class ElasticEntity {
   private String id;
 
   @Field
-  private String createdAt;
+  private Long createdAt = new Instant().getMillis();
 
   @Field
   private String applicationName;
@@ -33,9 +34,8 @@ public class ElasticEntity {
     this.bodyLog = bodyLog;
   }
 
-  public ElasticEntity(String createdAt, String applicationName, List<String> keyWords,
+  public ElasticEntity(String applicationName, List<String> keyWords,
                        String bodyLog) {
-    this.createdAt = createdAt;
     this.applicationName = applicationName;
     this.keyWords = keyWords;
     this.bodyLog = bodyLog;

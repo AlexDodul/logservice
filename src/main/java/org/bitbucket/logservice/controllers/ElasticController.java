@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.io.IOException;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,7 +24,6 @@ import org.bitbucket.logservice.payload.request.FilterRequest;
 import org.bitbucket.logservice.payload.request.KeyWordsRequest;
 import org.bitbucket.logservice.payload.response.ApiKeyResponse;
 import org.bitbucket.logservice.payload.response.LogResponse;
-import org.bitbucket.logservice.payload.response.LogsResponse;
 import org.bitbucket.logservice.security.ApiKeyProvider;
 import org.bitbucket.logservice.services.ApiKeyService;
 import org.bitbucket.logservice.services.CsvExportService;
@@ -40,7 +38,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -66,7 +63,7 @@ public class ElasticController {
 
   @Operation(summary = "Search only by Keywords", description = "Search by keywords only, without using dates")
   @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "Search was successful", content = @Content(schema = @Schema(implementation = LogsResponse.class))),
+      @ApiResponse(responseCode = "200", description = "Search was successful", content = @Content(schema = @Schema(implementation = LogResponse.class))),
       @ApiResponse(responseCode = "400", description = "Bad request. Check passed parameters", content = @Content(schema = @Schema(hidden = true))),
       @ApiResponse(responseCode = "403", description = "Forbidden. No access rights. Needed ApiKey", content = @Content(schema = @Schema(hidden = true))),
       @ApiResponse(responseCode = "404", description = "Not Found. Requested resource was not found.", content = @Content(schema = @Schema(hidden = true))),
@@ -82,7 +79,7 @@ public class ElasticController {
   ) {
     Pageable pageable = PageRequest.of(page, size);
     List<ElasticEntity> result = elasticService.readAllByKeyWords(
-        keyWordsRequest.getKeywords(),
+        keyWordsRequest.getKeyWords(),
         pageable,
         HttpServletUtils.getCompanyName(httpServletRequest)
     );
@@ -91,7 +88,7 @@ public class ElasticController {
 
   @Operation(summary = "Search by keywords, dates using pagination", description = "The search is carried out by keywords, dates using pagination. All fields are optional. The company name is substituted automatically. I take information about the company from the apikey, which is in the request header")
   @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "Search was successful", content = @Content(schema = @Schema(implementation = LogsResponse.class))),
+      @ApiResponse(responseCode = "200", description = "Search was successful", content = @Content(schema = @Schema(implementation = LogResponse.class))),
       @ApiResponse(responseCode = "400", description = "Bad request. Check passed parameters", content = @Content(schema = @Schema(hidden = true))),
       @ApiResponse(responseCode = "403", description = "Forbidden. No access rights. Needed ApiKey", content = @Content(schema = @Schema(hidden = true))),
       @ApiResponse(responseCode = "404", description = "Not Found. Requested resource was not found.", content = @Content(schema = @Schema(hidden = true))),
@@ -124,18 +121,20 @@ public class ElasticController {
   })
   @PostMapping("/save")
   @SecurityRequirement(name = "X-Api-Key")
-  public ResponseEntity<Object> saveLogInTable(@RequestBody BodyLogRequest bodyLogRequest,
-                                               HttpServletRequest httpServletRequest) {
-    ElasticEntity elasticEntity = elasticService.saveLogInTable(
-        TransferObject.toElasticEntity(bodyLogRequest),
-        HttpServletUtils.getCompanyName(httpServletRequest));
-
-    return ResponseEntity.ok(new LogResponse(elasticEntity.getBodyLog()));
+  public ResponseEntity<LogResponse> saveLogInTable(@RequestBody BodyLogRequest bodyLogRequest,
+                                                    HttpServletRequest httpServletRequest) {
+    ElasticEntity elasticEntity = elasticService
+        .saveLogInTable(bodyLogRequest, HttpServletUtils.getCompanyName(httpServletRequest));
+    return ResponseEntity.ok(new LogResponse(
+        elasticEntity.getCreatedAt(),
+        elasticEntity.getKeyWords(),
+        elasticEntity.getBodyLog())
+    );
   }
 
   @Operation(summary = "Generating an api key", description = "Method for generating a new ari key for a new application")
   @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "Key generated successfully", content = @Content(schema = @Schema(implementation = LogsResponse.class))),
+      @ApiResponse(responseCode = "200", description = "Key generated successfully", content = @Content(schema = @Schema(implementation = ApiKeyResponse.class))),
       @ApiResponse(responseCode = "400", description = "Bad request. Check passed parameters", content = @Content(schema = @Schema(hidden = true))),
       @ApiResponse(responseCode = "404", description = "Not Found. Requested resource was not found.", content = @Content(schema = @Schema(hidden = true))),
       @ApiResponse(responseCode = "500", description = "Internal Server Error. Some internal error was occurred.", content = @Content(schema = @Schema(hidden = true)))
@@ -149,7 +148,7 @@ public class ElasticController {
 
   @Operation(summary = "Save in .csv", description = "Saving data in .csv format")
   @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "Save successfully", content = @Content(schema = @Schema(implementation = LogsResponse.class))),
+      @ApiResponse(responseCode = "200", description = "Save successfully", content = @Content(schema = @Schema(implementation = LogResponse.class))),
       @ApiResponse(responseCode = "400", description = "Bad request. Check passed parameters", content = @Content(schema = @Schema(hidden = true))),
       @ApiResponse(responseCode = "403", description = "Forbidden. No access rights. Needed ApiKey", content = @Content(schema = @Schema(hidden = true))),
       @ApiResponse(responseCode = "404", description = "Not Found. Requested resource was not found.", content = @Content(schema = @Schema(hidden = true))),
@@ -161,13 +160,15 @@ public class ElasticController {
       HttpServletResponse servletResponse,
       @PageableDefault(size = 20) Pageable pageable,
       @RequestBody FilterRequest filterRequest,
-      @RequestHeader(name = "X-Api-Key") String apiKey
-  ) throws IOException {
+      HttpServletRequest httpServletRequest
+  ) {
     servletResponse.setContentType("text/csv");
     servletResponse.addHeader("Content-Disposition",
-        "attachment; filename=" + '"' + apiKeyProvider.getApplicationName(apiKey) + ".csv" + '"');
+        "attachment; filename=" + '"' + HttpServletUtils.getCompanyName(httpServletRequest) +
+            ".csv" + '"');
     csvExportService
-        .writeEmployeesToCsv(servletResponse.getWriter(), pageable, filterRequest, apiKey);
+        .writeEmployeesToCsv(servletResponse, pageable, filterRequest,
+            HttpServletUtils.getCompanyName(httpServletRequest));
   }
 
   @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)

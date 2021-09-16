@@ -14,7 +14,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class ControllerAdvisor extends ResponseEntityExceptionHandler {
 
-  @ExceptionHandler(value = EntityExistException.class)
+  @ExceptionHandler(EntityExistException.class)
   public ResponseEntity<Object> handleEntityExistException(EntityExistException ex) {
     log.error(ex.getMessage());
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
@@ -30,8 +30,13 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
     return ResponseEntity.badRequest().body(ex.getMessage());
   }
 
-  @ExceptionHandler(value = DateFormatException.class)
+  @ExceptionHandler(DateFormatException.class)
   public ResponseEntity<Object> handleDateFormatException(DateFormatException e){
+    return ResponseEntity.status(e.getStatusCode()).body(e.getMessage());
+  }
+
+  @ExceptionHandler(NoValuePresentException.class)
+  public ResponseEntity<Object> handleNoValuePresentException(NoValuePresentException e){
     return ResponseEntity.status(e.getStatusCode()).body(e.getMessage());
   }
 }

@@ -1,9 +1,9 @@
 package org.bitbucket.logservice.entity;
 
-import java.util.Date;
 import javax.persistence.Id;
 import lombok.Data;
 import org.elasticsearch.index.VersionType;
+import org.joda.time.Instant;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -15,7 +15,7 @@ public class ApiKeyEntity {
   private String id;
 
   @Field
-  private Date createdAt = new Date();
+  private Long createdAt = new Instant().getMillis();
 
   @Field
   private String applicationName;
