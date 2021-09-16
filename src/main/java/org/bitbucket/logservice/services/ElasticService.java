@@ -27,36 +27,36 @@ public class ElasticService {
       Pageable pageable,
       String appName
   ) {
-    List<String> keywords = filterRequest.getKeywords();
+    List<String> keyWords = filterRequest.getKeyWords();
     Long createdAtFrom = DateUtils.convertToEpoch(filterRequest.getCreatedAtFrom());
     Long createdAtTo = DateUtils.convertToEpoch(filterRequest.getCreatedAtTo());
 
-    if (createdAtFrom != null && createdAtTo != null && keywords != null) {
+    if (createdAtFrom != null && createdAtTo != null && keyWords != null) {
       return elasticsearchRepo.findAllByCreatedAtBetweenAndKeyWordsAndApplicationName(
           createdAtFrom,
           createdAtTo,
-          keywords,
+          keyWords,
           appName,
           pageable
       );
     }
-    if (createdAtFrom == null && createdAtTo != null && keywords != null) {
+    if (createdAtFrom == null && createdAtTo != null && keyWords != null) {
       return elasticsearchRepo.findAllByKeyWordsAndCreatedAtBeforeAndApplicationName(
-          keywords,
+          keyWords,
           createdAtTo,
           appName,
           pageable
       );
     }
-    if (createdAtFrom != null && createdAtTo == null && keywords != null) {
+    if (createdAtFrom != null && createdAtTo == null && keyWords != null) {
       return elasticsearchRepo.findAllByKeyWordsAndCreatedAtAfterAndApplicationName(
-          keywords,
+          keyWords,
           createdAtFrom,
           appName,
           pageable
       );
     }
-    if (createdAtFrom != null && createdAtTo != null && keywords == null) {
+    if (createdAtFrom != null && createdAtTo != null && keyWords == null) {
       return elasticsearchRepo.findAllByCreatedAtBetweenAndApplicationName(
           createdAtFrom,
           createdAtTo,
@@ -64,7 +64,7 @@ public class ElasticService {
           pageable
       );
     }
-    return elasticsearchRepo.findAllByKeyWordsAndApplicationName(keywords, appName, pageable);
+    return elasticsearchRepo.findAllByKeyWordsAndApplicationName(keyWords, appName, pageable);
   }
 
   public void deleteAll() {

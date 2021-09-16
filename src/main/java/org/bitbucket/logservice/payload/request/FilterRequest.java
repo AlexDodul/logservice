@@ -10,5 +10,5 @@ public class FilterRequest {
 
   private String createdAtTo;
 
-  private List<String> keywords;
+  private List<String> keyWords;
 }

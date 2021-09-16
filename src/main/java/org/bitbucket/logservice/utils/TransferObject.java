@@ -11,21 +11,6 @@ import org.springframework.beans.BeanUtils;
 @UtilityClass
 public class TransferObject {
 
-    /*public ElasticEntity toElasticEntity(BodyLogRequest bodyLogRequest) {
-        return new ElasticEntity(
-                bodyLogRequest.getCreatedAt(),
-                bodyLogRequest.getPlatformName(),
-                bodyLogRequest.getKeywords(),
-                bodyLogRequest.getBody()
-        );
-    }*/
-
-    /*public LogsResponse toLogResponse(List<ElasticEntity> elasticEntity) {
-        return new LogsResponse(
-            elasticEntity.stream().map(ElasticEntity::getBodyLog).collect(Collectors.toList())
-        );
-    }*/
-
     public List<LogResponse> toLogResponse(List<ElasticEntity> elasticEntity) {
         return elasticEntity.stream().map(entity -> new LogResponse(
             entity.getCreatedAt(),
