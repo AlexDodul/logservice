@@ -32,7 +32,6 @@ import org.bitbucket.logservice.utils.HttpServletUtils;
 import org.bitbucket.logservice.utils.TransferObject;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -158,10 +157,12 @@ public class ElasticController {
   @SecurityRequirement(name = "X-Api-Key")
   public void getAllEmployeesInCsv(
       HttpServletResponse servletResponse,
-      @PageableDefault(size = 20) Pageable pageable,
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "20") int size,
       @RequestBody FilterRequest filterRequest,
       HttpServletRequest httpServletRequest
   ) {
+    Pageable pageable = PageRequest.of(page, size);
     servletResponse.setContentType("text/csv");
     servletResponse.addHeader("Content-Disposition",
         "attachment; filename=" + '"' + HttpServletUtils.getCompanyName(httpServletRequest) +
