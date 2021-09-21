@@ -107,6 +107,7 @@ public class ElasticController {
         pageable,
         HttpServletUtils.getCompanyName(httpServletRequest)
     );
+    elasticService.deleteRequest();
     return ResponseEntity.ok(TransferObject.toLogResponse(result));
   }
 
@@ -120,10 +121,11 @@ public class ElasticController {
   })
   @PostMapping("/save")
   @SecurityRequirement(name = "X-Api-Key")
-  public ResponseEntity<LogResponse> saveLogInTable(@RequestBody BodyLogRequest bodyLogRequest,
+  public ResponseEntity<LogResponse> saveLogInTable(@Valid @RequestBody BodyLogRequest bodyLogRequest,
                                                     HttpServletRequest httpServletRequest) {
     ElasticEntity elasticEntity = elasticService
         .saveLogInTable(bodyLogRequest, HttpServletUtils.getCompanyName(httpServletRequest));
+    elasticService.removeOldDate();
     return ResponseEntity.ok(new LogResponse(
         elasticEntity.getCreatedAt(),
         elasticEntity.getKeyWords(),

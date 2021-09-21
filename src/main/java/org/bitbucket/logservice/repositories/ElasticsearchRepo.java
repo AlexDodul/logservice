@@ -4,6 +4,7 @@ import java.util.List;
 import org.bitbucket.logservice.entity.ElasticEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
+import org.springframework.data.jpa.repository.Modifying;
 
 public interface ElasticsearchRepo extends ElasticsearchRepository<ElasticEntity, String> {
 
@@ -44,4 +45,6 @@ public interface ElasticsearchRepo extends ElasticsearchRepository<ElasticEntity
       Pageable pageable
   );
 
+  @Modifying
+  void deleteAllByCreatedAtBefore(Long oldDate);
 }
