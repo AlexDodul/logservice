@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.bitbucket.logservice.entity.ElasticEntity;
 import org.bitbucket.logservice.payload.request.BodyLogRequest;
 import org.bitbucket.logservice.payload.request.FilterRequest;
@@ -13,10 +14,14 @@ import org.bitbucket.logservice.utils.TransferObject;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.common.unit.TimeValue;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
+@EnableScheduling
 public class ElasticService {
 
   private final ElasticsearchRepo elasticsearchRepo;
@@ -89,12 +94,13 @@ public class ElasticService {
     DeleteRequest request = new DeleteRequest("elastic_data", "id");
     request.timeout(TimeValue.timeValueHours(2));
   }
-
+  // "@hourly"
+  @Scheduled(cron = "@daily")
   public void removeOldDate() {
     Calendar cal = Calendar.getInstance();
-    Date today = cal.getTime();
-    cal.add(Calendar.DATE, -31);
+    cal.add(Calendar.DATE, -60);
     Date previousMonth = cal.getTime();
     elasticsearchRepo.deleteAllByCreatedAtBefore(previousMonth.getTime());
+    log.info("Delete old data"); 
   }
 }

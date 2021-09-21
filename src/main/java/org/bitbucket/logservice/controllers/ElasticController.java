@@ -53,6 +53,7 @@ import org.springframework.web.bind.annotation.RestController;
 )
 @Tag(name = "Log service", description = "Contact API")
 @Hidden
+
 public class ElasticController {
   private final ElasticService elasticService;
   private final ApiKeyService apiKeyService;
