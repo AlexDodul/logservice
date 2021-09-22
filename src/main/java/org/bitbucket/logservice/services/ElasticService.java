@@ -94,6 +94,7 @@ public class ElasticService {
     DeleteRequest request = new DeleteRequest("elastic_data", "id");
     request.timeout(TimeValue.timeValueHours(2));
   }
+
   // "@hourly"
   @Scheduled(cron = "@daily")
   public void removeOldDate() {
@@ -101,6 +102,6 @@ public class ElasticService {
     cal.add(Calendar.DATE, -60);
     Date previousMonth = cal.getTime();
     elasticsearchRepo.deleteAllByCreatedAtBefore(previousMonth.getTime());
-    log.info("Delete old data"); 
+    log.info("Delete old data");
   }
 }
