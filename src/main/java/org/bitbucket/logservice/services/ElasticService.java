@@ -10,6 +10,7 @@ import org.bitbucket.logservice.payload.request.BodyLogRequest;
 import org.bitbucket.logservice.payload.request.FilterRequest;
 import org.bitbucket.logservice.repositories.ElasticsearchRepo;
 import org.bitbucket.logservice.utils.DateUtils;
+import org.bitbucket.logservice.utils.FilesUpload;
 import org.bitbucket.logservice.utils.TransferObject;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.common.unit.TimeValue;
@@ -25,6 +26,10 @@ import org.springframework.stereotype.Service;
 public class ElasticService {
 
   private final ElasticsearchRepo elasticsearchRepo;
+
+  private final SlackService slackService;
+
+  private final FilesUpload filesUpload;
 
   public List<ElasticEntity> readAllByKeyWords(List<String> keyWord, Pageable pageable,
                                                String appName) {
@@ -83,6 +88,13 @@ public class ElasticService {
   public ElasticEntity saveLogInTable(BodyLogRequest bodyLogRequest, String appName) {
     ElasticEntity entity = TransferObject.dtoToEntity(bodyLogRequest);
     entity.setApplicationName(appName);
+    if (bodyLogRequest.getBodyLog().length() <= 3500){
+
+      slackService.sendMessageToSlack(entity);
+    } else if (bodyLogRequest.getBodyLog().length() > 3500){
+      filesUpload.sendFile(bodyLogRequest.getBodyLog());
+    }
+    System.out.println(bodyLogRequest.getBodyLog().length());
     return elasticsearchRepo.save(entity);
   }
 

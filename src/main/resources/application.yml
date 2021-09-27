@@ -18,6 +18,10 @@ spring:
       request-timeout: 5000
 server:
   port: 8081
+  servlet:
+    context-path: /
 app:
   security:
     secret-key: SecretKeyGrizzly
+slack:
+  webhook: https://hooks.slack.com/services/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
