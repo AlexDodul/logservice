@@ -40,4 +40,11 @@ public class ElasticEntity {
     this.keyWords = keyWords;
     this.bodyLog = bodyLog;
   }
+
+  @Override
+  public String toString() {
+    return "Create At - " + createdAt +
+        "\nKey Words - " + keyWords +
+        "\nBody Log - " + bodyLog;
+  }
 }

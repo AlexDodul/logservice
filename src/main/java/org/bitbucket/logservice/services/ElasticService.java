@@ -92,7 +92,7 @@ public class ElasticService {
 
       slackService.sendMessageToSlack(entity);
     } else if (bodyLogRequest.getBodyLog().length() > 3500){
-      filesUpload.sendFile(bodyLogRequest.getBodyLog());
+      filesUpload.sendFile(entity.toString());
     }
     System.out.println(bodyLogRequest.getBodyLog().length());
     return elasticsearchRepo.save(entity);
