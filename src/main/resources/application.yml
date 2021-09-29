@@ -24,6 +24,6 @@ app:
   security:
     secret-key: SecretKeyGrizzly
 slack:
-  webhook: https://hooks.slack.com/services/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
+  token: xoxb-2518902811235-2535703583427-TqBlDAS0dz6M30GXegefXv7F
 logging.level:
   com.slack.api: DEBUG

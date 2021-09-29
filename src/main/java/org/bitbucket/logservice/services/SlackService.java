@@ -1,7 +1,7 @@
 package org.bitbucket.logservice.services;
 
-import com.slack.api.Slack;
-import com.slack.api.webhook.Payload;
+import com.slack.api.bolt.App;
+import com.slack.api.methods.SlackApiException;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,26 +16,26 @@ public class SlackService {
 
   private static final String NEW_LINE = "\n";
 
-  @Value("${slack.webhook}")
-  private String urlSlackWebHook;
+  @Value("${slack.token}")
+  private String botToken;
 
-  public void sendMessageToSlack(ElasticEntity message) {
+  public void sendMessageToSlack(ElasticEntity message, String channelId) {
     process("Create At - " + message.getCreatedAt()
         + NEW_LINE
         + "Key Words - " + message.getKeyWords()
         + NEW_LINE
-        + "Body Log - " + message.getBodyLog());
+        + "Body Log - " + message.getBodyLog(), channelId);
   }
 
-  private void process(String message) {
-    Payload payload = Payload.builder()
-        .text(message)
-        .build();
+  private void process(String message, String channelId) {
+    App app = new App();
     try {
-      Slack.getInstance().send(
-          urlSlackWebHook, payload);
-    } catch (IOException e) {
-      log.error("Unexpected Error! WebHook:" + urlSlackWebHook);
+      app.client().chatPostMessage(r -> r
+          .token(botToken)
+          .channel(channelId)
+          .text(message));
+    } catch (IOException | SlackApiException e) {
+      e.printStackTrace();
     }
   }
 }

@@ -9,5 +9,4 @@ public interface ApiKeyRepo extends ElasticsearchRepository<ApiKeyEntity, String
   Optional<ApiKeyEntity> findByApplicationName(String applicationName);
 
   Optional<ApiKeyEntity> findByApiKey(String apiKey);
-
 }

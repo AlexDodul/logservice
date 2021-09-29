@@ -5,9 +5,11 @@ import java.util.Date;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.bitbucket.logservice.entity.ApiKeyEntity;
 import org.bitbucket.logservice.entity.ElasticEntity;
 import org.bitbucket.logservice.payload.request.BodyLogRequest;
 import org.bitbucket.logservice.payload.request.FilterRequest;
+import org.bitbucket.logservice.repositories.ApiKeyRepo;
 import org.bitbucket.logservice.repositories.ElasticsearchRepo;
 import org.bitbucket.logservice.utils.DateUtils;
 import org.bitbucket.logservice.utils.FilesUpload;
@@ -30,6 +32,8 @@ public class ElasticService {
   private final SlackService slackService;
 
   private final FilesUpload filesUpload;
+
+  private final ApiKeyRepo apiKeyRepo;
 
   public List<ElasticEntity> readAllByKeyWords(List<String> keyWord, Pageable pageable,
                                                String appName) {
@@ -88,11 +92,19 @@ public class ElasticService {
   public ElasticEntity saveLogInTable(BodyLogRequest bodyLogRequest, String appName) {
     ElasticEntity entity = TransferObject.dtoToEntity(bodyLogRequest);
     entity.setApplicationName(appName);
-    if (bodyLogRequest.getBodyLog().length() <= 3500){
 
-      slackService.sendMessageToSlack(entity);
-    } else if (bodyLogRequest.getBodyLog().length() > 3500){
-      filesUpload.sendFile(entity.toString());
+    ApiKeyEntity apiKeyEntity = apiKeyRepo.findByApplicationName(appName).orElseThrow();
+    List<String> channelsId = apiKeyEntity.getChannelId();
+
+    if (bodyLogRequest.getBodyLog().length() <= 3500) {
+
+      for (String channelId : channelsId) {
+        slackService.sendMessageToSlack(entity, channelId);
+      }
+    } else if (bodyLogRequest.getBodyLog().length() > 3500) {
+      for (String channelId : channelsId) {
+        filesUpload.sendFile(entity.toString(), channelId);
+      }
     }
     System.out.println(bodyLogRequest.getBodyLog().length());
     return elasticsearchRepo.save(entity);
@@ -107,7 +119,6 @@ public class ElasticService {
     request.timeout(TimeValue.timeValueHours(2));
   }
 
-  // "@hourly"
   @Scheduled(cron = "@daily")
   public void removeOldDate() {
     Calendar cal = Calendar.getInstance();

@@ -1,5 +1,6 @@
 package org.bitbucket.logservice.entity;
 
+import java.util.List;
 import javax.persistence.Id;
 import lombok.Data;
 import org.elasticsearch.index.VersionType;
@@ -24,7 +25,7 @@ public class ApiKeyEntity {
   private String apiKey;
 
   @Field
-  private String channelId;
+  private List<String> channelId;
 
   public ApiKeyEntity(String applicationName, String apiKey) {
     this.applicationName = applicationName;

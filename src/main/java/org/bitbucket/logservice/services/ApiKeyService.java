@@ -15,6 +15,7 @@ public class ApiKeyService {
   private final ApiKeyRepo apiKeyRepo;
   private final ApiKeyProvider provider;
 
+
   public ApiKeyEntity createApiKey(ApplicationNameRequest applicationNameRequest) {
     if (Objects.nonNull(
         apiKeyRepo.findByApplicationName(applicationNameRequest.getApplicationName())
