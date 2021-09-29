@@ -23,6 +23,9 @@ public class ApiKeyEntity {
   @Field
   private String apiKey;
 
+  @Field
+  private String channelId;
+
   public ApiKeyEntity(String applicationName, String apiKey) {
     this.applicationName = applicationName;
     this.apiKey = apiKey;
