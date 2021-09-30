@@ -34,7 +34,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -113,7 +112,7 @@ public class ElasticController {
   }
 
   @Operation(summary = "Save log", description = "Save log to database")
-  @ApiResponses(value = {
+  @ApiResponses({
       @ApiResponse(responseCode = "200", description = "Save successfully", content = @Content(schema = @Schema(implementation = LogResponse.class))),
       @ApiResponse(responseCode = "400", description = "Bad request. Check passed parameters", content = @Content(schema = @Schema(hidden = true))),
       @ApiResponse(responseCode = "403", description = "Forbidden. No access rights. Needed ApiKey", content = @Content(schema = @Schema(hidden = true))),
@@ -135,7 +134,7 @@ public class ElasticController {
   }
 
   @Operation(summary = "Generating an api key", description = "Method for generating a new ari key for a new application")
-  @ApiResponses(value = {
+  @ApiResponses({
       @ApiResponse(responseCode = "200", description = "Key generated successfully", content = @Content(schema = @Schema(implementation = ApiKeyResponse.class))),
       @ApiResponse(responseCode = "400", description = "Bad request. Check passed parameters", content = @Content(schema = @Schema(hidden = true))),
       @ApiResponse(responseCode = "404", description = "Not Found. Requested resource was not found.", content = @Content(schema = @Schema(hidden = true))),
@@ -149,7 +148,7 @@ public class ElasticController {
   }
 
   @Operation(summary = "Save in .csv", description = "Saving data in .csv format")
-  @ApiResponses(value = {
+  @ApiResponses({
       @ApiResponse(responseCode = "200", description = "Save successfully", content = @Content(schema = @Schema(implementation = LogResponse.class))),
       @ApiResponse(responseCode = "400", description = "Bad request. Check passed parameters", content = @Content(schema = @Schema(hidden = true))),
       @ApiResponse(responseCode = "403", description = "Forbidden. No access rights. Needed ApiKey", content = @Content(schema = @Schema(hidden = true))),
@@ -180,18 +179,5 @@ public class ElasticController {
   public ResponseEntity<List<ElasticEntity>> allLogs() {
     List<ElasticEntity> result = elasticService.readAllLogs();
     return ResponseEntity.ok(result);
-  }
-
-  @Operation(summary = "Delete all", description = "Delete all data")
-  @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "Delete successfully", content = @Content(schema = @Schema(hidden = true))),
-      @ApiResponse(responseCode = "400", description = "Bad request. Check passed parameters", content = @Content(schema = @Schema(hidden = true))),
-      @ApiResponse(responseCode = "403", description = "Forbidden. No access rights. Contact administrator", content = @Content(schema = @Schema(hidden = true))),
-      @ApiResponse(responseCode = "404", description = "Not Found. Requested resource was not found.", content = @Content(schema = @Schema(hidden = true))),
-      @ApiResponse(responseCode = "500", description = "Internal Server Error. Some internal error was occurred.", content = @Content(schema = @Schema(hidden = true)))
-  })
-  @DeleteMapping
-  public void deleteAll() {
-    elasticService.deleteAll();
   }
 }
