@@ -15,6 +15,7 @@ public class TransferObject {
         return elasticEntity.stream().map(entity -> new LogResponse(
             entity.getCreatedAt(),
             entity.getKeyWords(),
+            entity.getMessageLevel(),
             entity.getBodyLog()
         )).collect(Collectors.toList());
     }

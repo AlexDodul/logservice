@@ -31,12 +31,12 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
   }
 
   @ExceptionHandler(DateFormatException.class)
-  public ResponseEntity<Object> handleDateFormatException(DateFormatException e){
+  public ResponseEntity<Object> handleDateFormatException(DateFormatException e) {
     return ResponseEntity.status(e.getStatusCode()).body(e.getMessage());
   }
 
   @ExceptionHandler(NoValuePresentException.class)
-  public ResponseEntity<Object> handleNoValuePresentException(NoValuePresentException e){
+  public ResponseEntity<Object> handleNoValuePresentException(NoValuePresentException e) {
     return ResponseEntity.status(e.getStatusCode()).body(e.getMessage());
   }
 }

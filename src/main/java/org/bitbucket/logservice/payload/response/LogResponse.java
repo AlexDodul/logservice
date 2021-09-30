@@ -13,5 +13,7 @@ public class LogResponse {
 
   private List<String> keyWords;
 
+  private String messageLevel;
+
   private String bodyLog;
 }

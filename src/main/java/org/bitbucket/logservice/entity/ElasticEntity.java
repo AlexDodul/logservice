@@ -28,6 +28,9 @@ public class ElasticEntity {
   private List<String> keyWords;
 
   @Field
+  private String messageLevel;
+
+  @Field
   private String bodyLog;
 
   public ElasticEntity(List<String> keyWords, String bodyLog) {

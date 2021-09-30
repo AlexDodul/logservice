@@ -9,6 +9,8 @@ public class BodyLogRequest {
 
   private List<String> keyWords;
 
+  private String messageLevel;
+
   @Size(max = 10000, message = "The maximum body log value is 10000")
   private String bodyLog;
 }

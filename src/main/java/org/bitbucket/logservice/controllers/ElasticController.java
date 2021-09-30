@@ -96,8 +96,9 @@ public class ElasticController {
   })
   @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(examples = @ExampleObject(
       "{\n" +
-      "  \"createdAtFrom\": \"2021-01-31\",\n" +
-      "  \"createdAtTo\": \"2021-02-28\",\n" +
+      "  \"createdAtFrom\": \"yyyy-mm-dd\",\n" +
+      "  \"createdAtTo\": \"yyyy-mm-dd\",\n" +
+      "  \"messageLevel\": \"INFO\",\n" +
       "  \"keyWords\": [\n" +
       "    \"string\"\n" +
       "  ]" + "\n}"
@@ -137,6 +138,7 @@ public class ElasticController {
     return ResponseEntity.ok(new LogResponse(
         elasticEntity.getCreatedAt(),
         elasticEntity.getKeyWords(),
+        elasticEntity.getMessageLevel(),
         elasticEntity.getBodyLog())
     );
   }
