@@ -5,7 +5,6 @@ import com.slack.api.bolt.response.ResponseTypes;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
 import org.bitbucket.logservice.entity.ApiKeyEntity;
 import org.bitbucket.logservice.repositories.ApiKeyRepo;
@@ -20,8 +19,8 @@ public class SlackAppService {
   public SlashCommandHandler reg() {
     return (req, ctx) -> {
       ApiKeyEntity apiKeyEntity =
-          repo.findByApplicationName(req.getPayload().getText()).orElseThrow(EntityExistsException::new);
-      if (apiKeyEntity.getApplicationName().isEmpty() || apiKeyEntity.getApplicationName() == null){
+          repo.findByApplicationName(req.getPayload().getText()).orElse(null);
+      if (Objects.isNull(apiKeyEntity)){
         return ctx.ack(r -> r.text(
             "This application doesn't exist '" + req.getPayload().getText() +
                 '\'').responseType(ResponseTypes.inChannel));

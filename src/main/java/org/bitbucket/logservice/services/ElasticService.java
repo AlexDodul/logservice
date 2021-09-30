@@ -96,16 +96,18 @@ public class ElasticService {
     ApiKeyEntity apiKeyEntity = apiKeyRepo.findByApplicationName(appName).orElseThrow();
     List<String> channelsId = apiKeyEntity.getChannelId();
 
-    if (bodyLogRequest.getBodyLog().length() <= 3500) {
-
-      for (String channelId : channelsId) {
-        slackService.sendMessageToSlack(entity, channelId);
-      }
-    } else if (bodyLogRequest.getBodyLog().length() > 3500) {
-      for (String channelId : channelsId) {
-        filesUpload.sendFile(entity.toString(), channelId);
+    if (channelsId != null) {
+      if (bodyLogRequest.getBodyLog().length() <= 3500) {
+        for (String channelId : channelsId) {
+          slackService.sendMessageToSlack(entity, channelId);
+        }
+      } else {
+        for (String channelId : channelsId) {
+          filesUpload.sendFile(entity.toString(), channelId);
+        }
       }
     }
+
     System.out.println(bodyLogRequest.getBodyLog().length());
     return elasticsearchRepo.save(entity);
   }
