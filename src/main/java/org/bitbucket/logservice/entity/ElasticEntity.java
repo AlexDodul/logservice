@@ -1,5 +1,6 @@
 package org.bitbucket.logservice.entity;
 
+import java.util.Date;
 import java.util.List;
 import javax.persistence.Id;
 import lombok.Data;
@@ -43,7 +44,7 @@ public class ElasticEntity {
 
   @Override
   public String toString() {
-    return "Create At - " + createdAt +
+    return "Create At - " + new Date(createdAt) +
         "\nKey Words - " + keyWords +
         "\nBody Log - " + bodyLog;
   }

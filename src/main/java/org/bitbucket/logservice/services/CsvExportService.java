@@ -1,6 +1,7 @@
 package org.bitbucket.logservice.services;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -28,11 +29,13 @@ public class CsvExportService {
   ) {
     List<ElasticEntity> elasticEntities =
         elasticService.readAllByKeyWordsAndDate(filterRequest, pageable, applicationName);
-    if (elasticEntities.isEmpty()) throw new NoValuePresentException("Data is empty", HttpStatus.NO_CONTENT.value());
+    if (elasticEntities.isEmpty()) {
+      throw new NoValuePresentException("Data is empty", HttpStatus.NO_CONTENT.value());
+    }
     try (CSVPrinter csvPrinter = new CSVPrinter(response.getWriter(), CSVFormat.DEFAULT)) {
       for (ElasticEntity elasticEntity : elasticEntities) {
         csvPrinter.printRecord(
-            elasticEntity.getCreatedAt(),
+            new Date(elasticEntity.getCreatedAt()),
             elasticEntity.getKeyWords(),
             elasticEntity.getBodyLog()
         );
