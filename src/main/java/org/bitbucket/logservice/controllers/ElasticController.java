@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -61,7 +62,7 @@ public class ElasticController {
 
 
   @Operation(summary = "Search only by Keywords", description = "Search by keywords only, without using dates")
-  @ApiResponses(value = {
+  @ApiResponses({
       @ApiResponse(responseCode = "200", description = "Search was successful", content = @Content(schema = @Schema(implementation = LogResponse.class))),
       @ApiResponse(responseCode = "400", description = "Bad request. Check passed parameters", content = @Content(schema = @Schema(hidden = true))),
       @ApiResponse(responseCode = "403", description = "Forbidden. No access rights. Needed ApiKey", content = @Content(schema = @Schema(hidden = true))),
@@ -86,13 +87,21 @@ public class ElasticController {
   }
 
   @Operation(summary = "Search by keywords, dates using pagination", description = "The search is carried out by keywords, dates using pagination. All fields are optional. The company name is substituted automatically. I take information about the company from the apikey, which is in the request header")
-  @ApiResponses(value = {
+  @ApiResponses({
       @ApiResponse(responseCode = "200", description = "Search was successful", content = @Content(schema = @Schema(implementation = LogResponse.class))),
       @ApiResponse(responseCode = "400", description = "Bad request. Check passed parameters", content = @Content(schema = @Schema(hidden = true))),
       @ApiResponse(responseCode = "403", description = "Forbidden. No access rights. Needed ApiKey", content = @Content(schema = @Schema(hidden = true))),
       @ApiResponse(responseCode = "404", description = "Not Found. Requested resource was not found.", content = @Content(schema = @Schema(hidden = true))),
       @ApiResponse(responseCode = "500", description = "Internal Server Error. Some internal error was occurred.", content = @Content(schema = @Schema(hidden = true)))
   })
+  @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(examples = @ExampleObject(
+      "{\n" +
+      "  \"createdAtFrom\": \"2021-01-31\",\n" +
+      "  \"createdAtTo\": \"2021-02-28\",\n" +
+      "  \"keyWords\": [\n" +
+      "    \"string\"\n" +
+      "  ]" + "\n}"
+  )))
   @PostMapping("/filter")
   @SecurityRequirement(name = "X-Api-Key")
   public ResponseEntity<Object> searchByFilter(
@@ -125,7 +134,6 @@ public class ElasticController {
                                                     HttpServletRequest httpServletRequest) {
     ElasticEntity elasticEntity = elasticService
         .saveLogInTable(bodyLogRequest, HttpServletUtils.getCompanyName(httpServletRequest));
-    elasticService.removeOldDate();
     return ResponseEntity.ok(new LogResponse(
         elasticEntity.getCreatedAt(),
         elasticEntity.getKeyWords(),

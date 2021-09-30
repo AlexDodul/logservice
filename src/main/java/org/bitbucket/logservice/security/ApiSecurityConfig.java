@@ -33,7 +33,6 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
       public Authentication authenticate(Authentication authentication)
           throws AuthenticationException {
         String principal = String.valueOf(authentication.getPrincipal());
-        System.out.println("principal" + principal);
         if (!apiKeyService.verification(principal)) {
           throw new BadCredentialsException("The API key was not found or not the expected value.");
         }

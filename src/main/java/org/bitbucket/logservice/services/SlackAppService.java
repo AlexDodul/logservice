@@ -39,8 +39,6 @@ public class SlackAppService {
       apiKeyEntity.setChannelId(channelId);
       repo.save(apiKeyEntity);
 
-      System.out.println(req.getPayload().getText());
-      System.out.println(req.getPayload().getChannelId());
       return ctx.ack(r -> r.text("Application '" + apiKeyEntity.getApplicationName() + "' registered successfully" )
           .responseType(ResponseTypes.inChannel));
     };

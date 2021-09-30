@@ -31,7 +31,6 @@ public class ApiKeyService {
   }
 
   public boolean verification(String apiKey) {
-    System.out.println(provider.getApplicationName(apiKey));
     return Objects.nonNull(apiKeyRepo.findByApiKey(apiKey).orElse(null));
   }
 }

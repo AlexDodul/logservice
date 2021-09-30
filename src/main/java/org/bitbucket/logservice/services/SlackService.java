@@ -3,6 +3,7 @@ package org.bitbucket.logservice.services;
 import com.slack.api.bolt.App;
 import com.slack.api.methods.SlackApiException;
 import java.io.IOException;
+import java.util.Date;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bitbucket.logservice.entity.ElasticEntity;
@@ -20,7 +21,8 @@ public class SlackService {
   private String botToken;
 
   public void sendMessageToSlack(ElasticEntity message, String channelId) {
-    process("Create At - " + message.getCreatedAt()
+    Date date = new Date(message.getCreatedAt());
+    process("Create At - " + date
         + NEW_LINE
         + "Key Words - " + message.getKeyWords()
         + NEW_LINE

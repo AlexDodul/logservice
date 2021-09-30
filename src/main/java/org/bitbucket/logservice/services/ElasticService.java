@@ -107,8 +107,6 @@ public class ElasticService {
         }
       }
     }
-
-    System.out.println(bodyLogRequest.getBodyLog().length());
     return elasticsearchRepo.save(entity);
   }
 

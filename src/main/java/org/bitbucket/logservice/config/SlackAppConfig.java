@@ -18,7 +18,6 @@ public class SlackAppConfig {
     AppConfig appConfig = new AppConfig();
     appConfig.setSigningSecret("419b9fc3ca6b61bdb270aaa813c8c3ec");
     App app = new App(appConfig);
-    System.out.println(app.config().getSingleTeamBotToken());
     app.command("/subscribe", slackAppService.reg());
     return app;
   }
