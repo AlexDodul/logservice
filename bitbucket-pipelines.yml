@@ -2,53 +2,26 @@
 # Use a skeleton to build, test and deploy using manual and parallel steps
 # -----
 # You can specify a custom docker image from Docker Hub as your build environment.
-#image: maven:3.3.9
-#
-#pipelines:
-#  default:
-#    - step:
-#        name: Build
-#        script:
-#
-#          - git archive --format=zip main -o log-service-ror.zip
-#        artifacts:
-#          - log-service-ror.zip
-#
-#    - step:
-#        name: Deploy to production
-#        deployment: production
-#        caches:
-#          - pip
-#        script:
-#          - pipe: atlassian/heroku-deploy:0.1.1
-#            variables:
-#              HEROKU_API_KEY: 48f9aa2f-a930-4d1e-8ea3-5ba16e8009c2
-#              HEROKU_APP_NAME: log-service-ror
-#              ZIP_FILE: log-service-ror.zip
-#  Template maven-build
-
-#  This template allows you to test and build your Java project with Maven.
-#  The workflow allows running tests, code checkstyle and security scans on the default branch.
-
-# Prerequisites: pom.xml and appropriate project structure should exist in the repository.
-
-image: maven:3.6.3
+image: maven:3.3.9
 
 pipelines:
   default:
-    - parallel:
-        - step:
-            name: Build and Test
-            caches:
-              - maven
-            script:
-              - mvn -B verify --file pom.xml
-            after-script:
-              # Collect checkstyle results, if any, and convert to Bitbucket Code Insights.
-              - pipe: atlassian/checkstyle-report:0.2.0
-        - step:
-            name: Security Scan
-            script:
-              # Run a security scan for sensitive data.
-              # See more security tools at https://bitbucket.org/product/features/pipelines/integrations?&category=security
-              - pipe: atlassian/git-secrets-scan:0.4.3
+    - step:
+        name: Build
+        script:
+
+          - git archive --format=zip main -o log-service-ror.zip
+        artifacts:
+          - log-service-ror.zip
+
+    - step:
+        name: Deploy to production
+        deployment: production
+        caches:
+          - pip
+        script:
+          - pipe: atlassian/heroku-deploy:0.1.1
+            variables:
+              HEROKU_API_KEY: 48f9aa2f-a930-4d1e-8ea3-5ba16e8009c2
+              HEROKU_APP_NAME: log-service-ror
+              ZIP_FILE: log-service-ror.zip

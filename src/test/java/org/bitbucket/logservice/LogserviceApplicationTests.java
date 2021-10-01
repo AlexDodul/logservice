@@ -1,6 +1,5 @@
 package org.bitbucket.logservice;
 
-/*
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -12,4 +11,3 @@ class LogserviceApplicationTests {
     }
 
 }
-*/
