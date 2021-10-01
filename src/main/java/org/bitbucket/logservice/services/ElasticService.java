@@ -160,7 +160,7 @@ public class ElasticService {
     List<String> channelsId = apiKeyEntity.getChannelId();
 
     if (channelsId != null) {
-      if (bodyLogRequest.getBodyLog().length() <= 3500) {
+      if (bodyLogRequest.getBodyLog().length() <= 7000) {
         for (String channelId : channelsId) {
           slackService.sendMessageToSlack(entity, channelId);
         }
