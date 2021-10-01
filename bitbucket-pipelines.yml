@@ -9,10 +9,10 @@ pipelines:
     - step:
         name: Build
         script:
-          - cd logservice
+          - cd src/main
           - git archive --format=tar.gz main -o log-service-ror.tar.gz
         artifacts:
-          - logservice/log-service-ror.tar.gz
+          - src/main/log-service-ror.tar.gz
 
     - step:
         name: Deploy to production
