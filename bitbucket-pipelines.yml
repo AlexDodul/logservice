@@ -10,9 +10,9 @@ pipelines:
         name: Build
         script:
           - cd src/main
-          - git archive --format=jar main -o logservice-1.0.0.jar
+          - git archive --format=tar.gz main -o logservice.tar.gz
         artifacts:
-          - src/main/logservice-1.0.0.jar
+          - src/main/logservice.tar.gz
 
     - step:
         name: Deploy to production
@@ -24,4 +24,4 @@ pipelines:
             variables:
               HEROKU_API_KEY: 48f9aa2f-a930-4d1e-8ea3-5ba16e8009c2
               HEROKU_APP_NAME: log-service-ror
-              ZIP_FILE: logservice.jar
+              ZIP_FILE: logservice.tar.gz
