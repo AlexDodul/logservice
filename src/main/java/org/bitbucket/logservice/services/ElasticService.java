@@ -14,8 +14,6 @@ import org.bitbucket.logservice.repositories.ElasticsearchRepo;
 import org.bitbucket.logservice.utils.DateUtils;
 import org.bitbucket.logservice.utils.FilesUpload;
 import org.bitbucket.logservice.utils.TransferObject;
-import org.elasticsearch.action.delete.DeleteRequest;
-import org.elasticsearch.common.unit.TimeValue;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -78,6 +76,15 @@ public class ElasticService {
       );
     }
 
+    if (createdAtFrom == null && createdAtTo == null && keyWords != null && messageLevel != null) {
+      return elasticsearchRepo.findAllByMessageLevelAndKeyWordsAndApplicationName(
+          messageLevel,
+          keyWords,
+          appName,
+          pageable
+      );
+    }
+
     if (createdAtFrom == null && createdAtTo != null && keyWords != null && messageLevel != null) {
       return elasticsearchRepo.findAllByCreatedAtBeforeAndMessageLevelAndKeyWordsAndApplicationName(
           createdAtTo,
@@ -98,8 +105,7 @@ public class ElasticService {
       );
     }
 
-    if (createdAtFrom != null && createdAtTo != null &&
-        keyWords != null) { // && messageLevel != null
+    if (createdAtFrom != null && createdAtTo != null && keyWords != null) {
       return elasticsearchRepo
           .findAllByCreatedAtBetweenAndMessageLevelAndKeyWordsAndApplicationName(
               createdAtFrom,
@@ -111,8 +117,7 @@ public class ElasticService {
           );
     }
 
-    if (createdAtFrom != null && createdAtTo != null &&
-        messageLevel != null) { //&& keyWords == null
+    if (createdAtFrom != null && createdAtTo != null && messageLevel != null) {
       return elasticsearchRepo
           .findAllByCreatedAtBetweenAndMessageLevelAndApplicationName(
               createdAtFrom,
@@ -123,7 +128,7 @@ public class ElasticService {
           );
     }
 
-    if (createdAtFrom == null && createdAtTo != null && keyWords != null && messageLevel == null) {
+    if (createdAtFrom == null && createdAtTo != null && keyWords != null) {
       return elasticsearchRepo.findAllByKeyWordsAndCreatedAtBeforeAndApplicationName(
           keyWords,
           createdAtTo,
@@ -132,7 +137,7 @@ public class ElasticService {
       );
     }
 
-    if (createdAtFrom != null && createdAtTo == null && keyWords != null && messageLevel == null) {
+    if (createdAtFrom != null && createdAtTo == null && keyWords != null) {
       return elasticsearchRepo.findAllByKeyWordsAndCreatedAtAfterAndApplicationName(
           keyWords,
           createdAtFrom,
@@ -141,7 +146,7 @@ public class ElasticService {
       );
     }
 
-    if (createdAtFrom != null && createdAtTo != null && keyWords == null && messageLevel == null) {
+    if (createdAtFrom != null && createdAtTo != null) {
       return elasticsearchRepo.findAllByCreatedAtBetweenAndApplicationName(
           createdAtFrom,
           createdAtTo,
@@ -149,6 +154,15 @@ public class ElasticService {
           pageable
       );
     }
+
+    if (createdAtFrom == null && createdAtTo == null && keyWords == null && messageLevel != null) {
+      return elasticsearchRepo.findAllByMessageLevelAndApplicationName(
+          messageLevel,
+          appName,
+          pageable
+      );
+    }
+
     return elasticsearchRepo.findAllByKeyWordsAndApplicationName(keyWords, appName, pageable);
   }
 
@@ -166,6 +180,7 @@ public class ElasticService {
         }
       } else {
         for (String channelId : channelsId) {
+          slackService.sendFileDescription(entity, channelId);
           filesUpload.sendFile(entity.toString(), channelId);
         }
       }
@@ -177,15 +192,11 @@ public class ElasticService {
     return elasticsearchRepo.findAll();
   }
 
-  public void deleteRequest() {
-    DeleteRequest request = new DeleteRequest("elastic_data", "id");
-    request.timeout(TimeValue.timeValueHours(2));
-  }
-
+  //@hourly
   @Scheduled(cron = "@daily")
   public void removeOldDate() {
     Calendar cal = Calendar.getInstance();
-    cal.add(Calendar.DATE, -60);
+    cal.add(Calendar.DATE, -5);
     Date previousMonth = cal.getTime();
     elasticsearchRepo.deleteAllByCreatedAtBefore(previousMonth.getTime());
     log.info("Delete old data");

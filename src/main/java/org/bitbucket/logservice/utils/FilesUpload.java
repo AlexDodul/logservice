@@ -30,7 +30,6 @@ public class FilesUpload {
       reqEntity.addTextBody("channels", channelId, ContentType.DEFAULT_BINARY);
       reqEntity.addTextBody("token", botToken, ContentType.DEFAULT_BINARY);
       reqEntity.addTextBody("media", "file", ContentType.DEFAULT_BINARY);
-      reqEntity.addTextBody("initial_comment", "File", ContentType.DEFAULT_BINARY);
 
       httppost.setEntity(reqEntity.build());
       HttpResponse execute = httpclient.execute(httppost);

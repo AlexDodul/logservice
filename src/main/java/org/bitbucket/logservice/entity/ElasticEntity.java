@@ -25,10 +25,10 @@ public class ElasticEntity {
   private String applicationName;
 
   @Field
-  private List<String> keyWords;
+  private String messageLevel;
 
   @Field
-  private String messageLevel;
+  private List<String> keyWords;
 
   @Field
   private String bodyLog;
@@ -48,6 +48,7 @@ public class ElasticEntity {
   @Override
   public String toString() {
     return "Create At - " + new Date(createdAt) +
+        "\nMessage Level - " + messageLevel +
         "\nKey Words - " + keyWords +
         "\nBody Log - " + bodyLog;
   }

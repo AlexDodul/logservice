@@ -8,13 +8,26 @@ import org.springframework.data.jpa.repository.Modifying;
 
 public interface ElasticsearchRepo extends ElasticsearchRepository<ElasticEntity, String> {
 
+  List<ElasticEntity> findAll();
+
   List<ElasticEntity> findAllByKeyWordsAndApplicationName(
       List<String> keyWords,
       String applicationName,
       Pageable pageable
   );
 
-  List<ElasticEntity> findAll();
+  List<ElasticEntity> findAllByMessageLevelAndApplicationName(
+      String messageLevel,
+      String applicationName,
+      Pageable pageable
+  );
+
+  List<ElasticEntity> findAllByMessageLevelAndKeyWordsAndApplicationName(
+      String messageLevel,
+      List<String> keyWords,
+      String applicationName,
+      Pageable pageable
+  );
 
   List<ElasticEntity> findAllByCreatedAtBetweenAndApplicationName(
       Long createdAtFrom,

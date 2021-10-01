@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -117,7 +118,6 @@ public class ElasticController {
         pageable,
         HttpServletUtils.getCompanyName(httpServletRequest)
     );
-    elasticService.deleteRequest();
     return ResponseEntity.ok(TransferObject.toLogResponse(result));
   }
 
@@ -136,9 +136,9 @@ public class ElasticController {
     ElasticEntity elasticEntity = elasticService
         .saveLogInTable(bodyLogRequest, HttpServletUtils.getCompanyName(httpServletRequest));
     return ResponseEntity.ok(new LogResponse(
-        elasticEntity.getCreatedAt(),
-        elasticEntity.getKeyWords(),
+        new Date(elasticEntity.getCreatedAt()),
         elasticEntity.getMessageLevel(),
+        elasticEntity.getKeyWords(),
         elasticEntity.getBodyLog())
     );
   }

@@ -1,5 +1,6 @@
 package org.bitbucket.logservice.payload.response;
 
+import java.util.Date;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,11 +10,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LogResponse {
-  private Long createdAt;
-
-  private List<String> keyWords;
+  private Date createdAt;
 
   private String messageLevel;
+
+  private List<String> keyWords;
 
   private String bodyLog;
 }

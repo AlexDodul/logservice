@@ -26,6 +26,8 @@ public class SlackService {
     Date date = new Date(message.getCreatedAt());
     process("Create At - " + date
         + NEW_LINE
+        + "Message Level - " + message.getMessageLevel()
+        + NEW_LINE
         + "Key Words - " + message.getKeyWords()
         + NEW_LINE
         + "Body Log - " + message.getBodyLog(), channelId, message.getMessageLevel());
@@ -56,6 +58,20 @@ public class SlackService {
       case "ERROR":
         return "#FF0000";
       default: return "#dddddd";
+    }
+  }
+
+  public void sendFileDescription(ElasticEntity entity, String channelId) {
+    App app = new App();
+    try {
+      app.client().chatPostMessage(r -> r.attachments(
+          List.of(Attachment.builder().fallback("Text").color(getColor(entity.getMessageLevel())).text("File")
+              .build()))
+          .token(botToken)
+          .channel(channelId)
+      );
+    } catch (IOException | SlackApiException e) {
+      e.printStackTrace();
     }
   }
 }

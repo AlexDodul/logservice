@@ -1,5 +1,6 @@
 package org.bitbucket.logservice.utils;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
@@ -13,9 +14,9 @@ public class TransferObject {
 
     public List<LogResponse> toLogResponse(List<ElasticEntity> elasticEntity) {
         return elasticEntity.stream().map(entity -> new LogResponse(
-            entity.getCreatedAt(),
-            entity.getKeyWords(),
+            new Date(entity.getCreatedAt()),
             entity.getMessageLevel(),
+            entity.getKeyWords(),
             entity.getBodyLog()
         )).collect(Collectors.toList());
     }
