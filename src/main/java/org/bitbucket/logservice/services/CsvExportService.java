@@ -36,8 +36,8 @@ public class CsvExportService {
       for (ElasticEntity elasticEntity : elasticEntities) {
         csvPrinter.printRecord(
             new Date(elasticEntity.getCreatedAt()),
-            elasticEntity.getKeyWords(),
             elasticEntity.getMessageLevel(),
+            elasticEntity.getKeyWords(),
             elasticEntity.getBodyLog()
         );
       }
