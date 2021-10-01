@@ -23,10 +23,8 @@ import org.bitbucket.logservice.entity.ElasticEntity;
 import org.bitbucket.logservice.payload.request.ApplicationNameRequest;
 import org.bitbucket.logservice.payload.request.BodyLogRequest;
 import org.bitbucket.logservice.payload.request.FilterRequest;
-import org.bitbucket.logservice.payload.request.KeyWordsRequest;
 import org.bitbucket.logservice.payload.response.ApiKeyResponse;
 import org.bitbucket.logservice.payload.response.LogResponse;
-import org.bitbucket.logservice.security.ApiKeyProvider;
 import org.bitbucket.logservice.services.ApiKeyService;
 import org.bitbucket.logservice.services.CsvExportService;
 import org.bitbucket.logservice.services.ElasticService;
@@ -58,34 +56,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ElasticController {
   private final ElasticService elasticService;
   private final ApiKeyService apiKeyService;
-  private final ApiKeyProvider apiKeyProvider;
   private final CsvExportService csvExportService;
-
-
-  @Operation(summary = "Search only by Keywords", description = "Search by keywords only, without using dates")
-  @ApiResponses({
-      @ApiResponse(responseCode = "200", description = "Search was successful", content = @Content(schema = @Schema(implementation = LogResponse.class))),
-      @ApiResponse(responseCode = "400", description = "Bad request. Check passed parameters", content = @Content(schema = @Schema(hidden = true))),
-      @ApiResponse(responseCode = "403", description = "Forbidden. No access rights. Needed ApiKey", content = @Content(schema = @Schema(hidden = true))),
-      @ApiResponse(responseCode = "404", description = "Not Found. Requested resource was not found.", content = @Content(schema = @Schema(hidden = true))),
-      @ApiResponse(responseCode = "500", description = "Internal Server Error. Some internal error was occurred.", content = @Content(schema = @Schema(hidden = true)))
-  })
-  @PostMapping("/keywords")
-  @SecurityRequirement(name = "X-Api-Key")
-  public ResponseEntity<Object> searchByKeywords(
-      @RequestBody KeyWordsRequest keyWordsRequest,
-      @RequestParam(defaultValue = "0") int page,
-      @RequestParam(defaultValue = "20") int size,
-      HttpServletRequest httpServletRequest
-  ) {
-    Pageable pageable = PageRequest.of(page, size);
-    List<ElasticEntity> result = elasticService.readAllByKeyWords(
-        keyWordsRequest.getKeyWords(),
-        pageable,
-        HttpServletUtils.getCompanyName(httpServletRequest)
-    );
-    return ResponseEntity.ok(TransferObject.toLogResponse(result));
-  }
 
   @Operation(summary = "Search by keywords, dates using pagination", description = "The search is carried out by keywords, dates using pagination. All fields are optional. The company name is substituted automatically. I take information about the company from the apikey, which is in the request header")
   @ApiResponses({
@@ -97,12 +68,12 @@ public class ElasticController {
   })
   @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(examples = @ExampleObject(
       "{\n" +
-      "  \"createdAtFrom\": \"yyyy-mm-dd\",\n" +
-      "  \"createdAtTo\": \"yyyy-mm-dd\",\n" +
-      "  \"messageLevel\": \"INFO\",\n" +
-      "  \"keyWords\": [\n" +
-      "    \"string\"\n" +
-      "  ]" + "\n}"
+          "  \"createdAtFrom\": \"yyyy-mm-dd\",\n" +
+          "  \"createdAtTo\": \"yyyy-mm-dd\",\n" +
+          "  \"messageLevel\": \"INFO\",\n" +
+          "  \"keyWords\": [\n" +
+          "    \"string\"\n" +
+          "  ]" + "\n}"
   )))
   @PostMapping("/filter")
   @SecurityRequirement(name = "X-Api-Key")
@@ -131,8 +102,9 @@ public class ElasticController {
   })
   @PostMapping("/save")
   @SecurityRequirement(name = "X-Api-Key")
-  public ResponseEntity<LogResponse> saveLogInTable(@Valid @RequestBody BodyLogRequest bodyLogRequest,
-                                                    HttpServletRequest httpServletRequest) {
+  public ResponseEntity<LogResponse> saveLogInTable(
+      @Valid @RequestBody BodyLogRequest bodyLogRequest,
+      HttpServletRequest httpServletRequest) {
     ElasticEntity elasticEntity = elasticService
         .saveLogInTable(bodyLogRequest, HttpServletUtils.getCompanyName(httpServletRequest));
     return ResponseEntity.ok(new LogResponse(
