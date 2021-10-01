@@ -1,4 +1,4 @@
-package org.bitbucket.logservice.utils;
+package org.bitbucket.logservice.services;
 
 import java.nio.charset.StandardCharsets;
 import org.apache.http.HttpResponse;
@@ -9,10 +9,10 @@ import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
-public class FilesUpload {
+@Service
+public class FilesUploadService {
 
   @Value("${slack.token}")
   private String botToken;

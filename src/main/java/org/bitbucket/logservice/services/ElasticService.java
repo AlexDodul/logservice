@@ -12,7 +12,6 @@ import org.bitbucket.logservice.payload.request.FilterRequest;
 import org.bitbucket.logservice.repositories.ApiKeyRepo;
 import org.bitbucket.logservice.repositories.ElasticsearchRepo;
 import org.bitbucket.logservice.utils.DateUtils;
-import org.bitbucket.logservice.utils.FilesUpload;
 import org.bitbucket.logservice.utils.TransferObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -29,7 +28,7 @@ public class ElasticService {
 
   private final SlackService slackService;
 
-  private final FilesUpload filesUpload;
+  private final FilesUploadService filesUploadService;
 
   private final ApiKeyRepo apiKeyRepo;
 
@@ -181,7 +180,7 @@ public class ElasticService {
       } else {
         for (String channelId : channelsId) {
           slackService.sendFileDescription(entity, channelId);
-          filesUpload.sendFile(entity.toString(), channelId);
+          filesUploadService.sendFile(entity.toString(), channelId);
         }
       }
     }

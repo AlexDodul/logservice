@@ -57,7 +57,7 @@ public class SlackService {
         return "#FFD700";
       case "ERROR":
         return "#FF0000";
-      default: return "#dddddd";
+      default: return "#DDDDDD";
     }
   }
 
