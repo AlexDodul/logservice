@@ -47,7 +47,7 @@ public class SlackService {
     }
   }
 
-  private String getColor(String messageLevel) {
+  public String getColor(String messageLevel) {
     switch (messageLevel) {
       case "INFO":
         return "#32CD32";
@@ -57,7 +57,8 @@ public class SlackService {
         return "#FFD700";
       case "ERROR":
         return "#FF0000";
-      default: return "#DDDDDD";
+      default:
+        return "#DDDDDD";
     }
   }
 
@@ -65,7 +66,8 @@ public class SlackService {
     App app = new App();
     try {
       app.client().chatPostMessage(r -> r.attachments(
-          List.of(Attachment.builder().fallback("Text").color(getColor(entity.getMessageLevel())).text("File")
+          List.of(Attachment.builder().fallback("Text").color(getColor(entity.getMessageLevel()))
+              .text("File")
               .build()))
           .token(botToken)
           .channel(channelId)

@@ -1,6 +1,7 @@
 package org.bitbucket.logservice.exception;
 
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,12 +21,13 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
   }
 
+  @NotNull
   @Override
   protected ResponseEntity<Object> handleMethodArgumentNotValid(
       MethodArgumentNotValidException ex,
-      HttpHeaders headers,
-      HttpStatus status,
-      WebRequest request
+      @NotNull HttpHeaders headers,
+      @NotNull HttpStatus status,
+      @NotNull WebRequest request
   ) {
     return ResponseEntity.badRequest().body(ex.getMessage());
   }

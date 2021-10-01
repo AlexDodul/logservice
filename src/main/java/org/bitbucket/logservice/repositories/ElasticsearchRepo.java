@@ -2,16 +2,20 @@ package org.bitbucket.logservice.repositories;
 
 import java.util.List;
 import org.bitbucket.logservice.entity.ElasticEntity;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.data.jpa.repository.Modifying;
 
 public interface ElasticsearchRepo extends ElasticsearchRepository<ElasticEntity, String> {
 
+  @Override
+  @NotNull
   List<ElasticEntity> findAll();
 
   List<ElasticEntity> findAllByKeyWordsAndApplicationName(
-      List<String> keyWords,
+      @Nullable List<String> keyWords,
       String applicationName,
       Pageable pageable
   );

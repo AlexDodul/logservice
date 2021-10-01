@@ -20,7 +20,7 @@ public class SlackAppService {
     return (req, ctx) -> {
       ApiKeyEntity apiKeyEntity =
           repo.findByApiKey(req.getPayload().getText()).orElse(null);
-      if (Objects.isNull(apiKeyEntity)){
+      if (Objects.isNull(apiKeyEntity)) {
         return ctx.ack(r -> r.text(
             "This application doesn't exist '" + req.getPayload().getText() +
                 '\'').responseType(ResponseTypes.inChannel));
@@ -32,14 +32,16 @@ public class SlackAppService {
       }
       if (channelId.contains(req.getPayload().getChannelId())) {
         return ctx.ack(r -> r.text(
-            "This channel already subscribe on this application '" + apiKeyEntity.getApplicationName() +
+            "This channel already subscribe on this application '" +
+                apiKeyEntity.getApplicationName() +
                 '\'').responseType(ResponseTypes.inChannel));
       }
       channelId.add(req.getPayload().getChannelId());
       apiKeyEntity.setChannelId(channelId);
       repo.save(apiKeyEntity);
 
-      return ctx.ack(r -> r.text("Application '" + apiKeyEntity.getApplicationName() + "' registered successfully" )
+      return ctx.ack(r -> r
+          .text("Application '" + apiKeyEntity.getApplicationName() + "' registered successfully")
           .responseType(ResponseTypes.inChannel));
     };
   }

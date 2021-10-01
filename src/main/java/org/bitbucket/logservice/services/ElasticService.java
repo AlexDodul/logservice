@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @EnableScheduling
 public class ElasticService {
+  private static final int CHARACTER_LIMIT_FOR_MESSAGE = 7000;
 
   private final ElasticsearchRepo elasticsearchRepo;
 
@@ -173,7 +174,7 @@ public class ElasticService {
     List<String> channelsId = apiKeyEntity.getChannelId();
 
     if (channelsId != null) {
-      if (bodyLogRequest.getBodyLog().length() <= 7000) {
+      if (bodyLogRequest.getBodyLog().length() <= CHARACTER_LIMIT_FOR_MESSAGE) {
         for (String channelId : channelsId) {
           slackService.sendMessageToSlack(entity, channelId);
         }
@@ -191,7 +192,6 @@ public class ElasticService {
     return elasticsearchRepo.findAll();
   }
 
-  //@hourly
   @Scheduled(cron = "@daily")
   public void removeOldDate() {
     Calendar cal = Calendar.getInstance();

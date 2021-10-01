@@ -12,18 +12,18 @@ import org.springframework.beans.BeanUtils;
 @UtilityClass
 public class TransferObject {
 
-    public List<LogResponse> toLogResponse(List<ElasticEntity> elasticEntity) {
-        return elasticEntity.stream().map(entity -> new LogResponse(
-            new Date(entity.getCreatedAt()),
-            entity.getMessageLevel(),
-            entity.getKeyWords(),
-            entity.getBodyLog()
-        )).collect(Collectors.toList());
-    }
+  public List<LogResponse> toLogResponse(List<ElasticEntity> elasticEntity) {
+    return elasticEntity.stream().map(entity -> new LogResponse(
+        new Date(entity.getCreatedAt()),
+        entity.getMessageLevel(),
+        entity.getKeyWords(),
+        entity.getBodyLog()
+    )).collect(Collectors.toList());
+  }
 
-    public static ElasticEntity dtoToEntity(BodyLogRequest bodyLogRequest) {
-        ElasticEntity elasticEntity = new ElasticEntity();
-        BeanUtils.copyProperties(bodyLogRequest, elasticEntity);
-        return elasticEntity;
-    }
+  public static ElasticEntity dtoToEntity(BodyLogRequest bodyLogRequest) {
+    ElasticEntity elasticEntity = new ElasticEntity();
+    BeanUtils.copyProperties(bodyLogRequest, elasticEntity);
+    return elasticEntity;
+  }
 }
