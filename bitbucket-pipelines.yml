@@ -9,7 +9,8 @@ pipelines:
     - step:
         name: Build
         script:
-          - git archive --format=zip main -o log-service-ror.zip
+          - zip log-service-ror.zip src
+#          - git archive --format=zip main -o log-service-ror.zip
         artifacts:
           - log-service-ror.zip
 
