@@ -10,7 +10,7 @@ pipelines:
         name: Build
         script:
           - cd src/main
-          - git archive --format=tar.gz main -o logservice.tar.gz
+          - git archive --format=tar.gz master -o logservice.tar.gz
         artifacts:
           - src/main/logservice.tar.gz
 
