@@ -9,7 +9,7 @@ pipelines:
     - step:
         name: Build
         script:
-          - git archive --format=tar.gz main -o logservice.tar.gz
+          - git archive --format=tar.gz main --output=logservice.tar.gz
         artifacts:
           - logservice.tar.gz
 
