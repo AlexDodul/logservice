@@ -9,10 +9,9 @@ pipelines:
     - step:
         name: Build
         script:
-
-          - git archive --format=zip main -o log-service-ror.zip
+          - git archive --format=zip main -o logservice.zip
         artifacts:
-          - log-service-ror.zip
+          - logservice.zip
 
     - step:
         name: Deploy to production
@@ -23,5 +22,5 @@ pipelines:
           - pipe: atlassian/heroku-deploy:0.1.1
             variables:
               HEROKU_API_KEY: 48f9aa2f-a930-4d1e-8ea3-5ba16e8009c2
-              HEROKU_APP_NAME: log-service-ror
-              ZIP_FILE: log-service-ror.zip
+              HEROKU_APP_NAME: logservice
+              ZIP_FILE: logservice.zip
