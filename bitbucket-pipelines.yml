@@ -9,7 +9,7 @@ pipelines:
     - step:
         name: Build
         script:
-          - git archive --format=zip main -o log-service-ror.tar.gz
+          - git archive --format=tar.gz main -o log-service-ror.tar.gz
         artifacts:
           - log-service-ror.tar.gz
 
