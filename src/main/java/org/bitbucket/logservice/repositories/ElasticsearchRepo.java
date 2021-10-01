@@ -23,6 +23,53 @@ public interface ElasticsearchRepo extends ElasticsearchRepository<ElasticEntity
       Pageable pageable
   );
 
+  List<ElasticEntity> findAllByCreatedAtBetweenAndMessageLevelAndApplicationName(
+      Long createdAtFrom,
+      Long createdAtTo,
+      String messageLevel,
+      String applicationName,
+      Pageable pageable
+  );
+
+  List<ElasticEntity> findAllByCreatedAtAfterAndMessageLevelAndApplicationName(
+      Long createdAtFrom,
+      String messageLevel,
+      String applicationName,
+      Pageable pageable
+  );
+
+  List<ElasticEntity> findAllByCreatedAtBeforeAndMessageLevelAndApplicationName(
+      Long createdAtTo,
+      String messageLevel,
+      String applicationName,
+      Pageable pageable
+  );
+
+  List<ElasticEntity> findAllByCreatedAtBetweenAndMessageLevelAndKeyWordsAndApplicationName(
+      Long createdFrom,
+      Long createdTo,
+      String messageLevel,
+      List<String> keyWords,
+      String applicationName,
+      Pageable pageable
+  );
+
+  List<ElasticEntity> findAllByCreatedAtAfterAndMessageLevelAndKeyWordsAndApplicationName(
+      Long createdAtFrom,
+      String messageLevel,
+      List<String> keyWords,
+      String applicationName,
+      Pageable pageable
+  );
+
+  List<ElasticEntity> findAllByCreatedAtBeforeAndMessageLevelAndKeyWordsAndApplicationName(
+      Long createdAtTo,
+      String messageLevel,
+      List<String> keyWords,
+      String applicationName,
+      Pageable pageable
+  );
+
   List<ElasticEntity> findAllByCreatedAtBetweenAndKeyWordsAndApplicationName(
       Long createdFrom,
       Long createdTo,

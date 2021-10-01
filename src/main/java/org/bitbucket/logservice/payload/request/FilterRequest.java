@@ -10,7 +10,7 @@ public class FilterRequest {
 
   private String createdAtTo;
 
-  private List<String> keyWords;
-
   private String messageLevel;
+
+  private List<String> keyWords;
 }

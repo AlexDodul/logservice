@@ -45,11 +45,50 @@ public class ElasticService {
       Pageable pageable,
       String appName
   ) {
-    List<String> keyWords = filterRequest.getKeyWords();
     Long createdAtFrom = DateUtils.convertToEpoch(filterRequest.getCreatedAtFrom());
     Long createdAtTo = DateUtils.convertToEpoch(filterRequest.getCreatedAtTo());
+    String messageLevel = filterRequest.getMessageLevel();
+    List<String> keyWords = filterRequest.getKeyWords();
 
-    if (createdAtFrom != null && createdAtTo != null && keyWords != null) {
+    if (createdAtFrom != null && createdAtTo == null && keyWords == null && messageLevel != null) {
+      return elasticsearchRepo.findAllByCreatedAtAfterAndMessageLevelAndApplicationName(
+          createdAtFrom,
+          messageLevel,
+          appName,
+          pageable
+      );
+    }
+
+    if (createdAtFrom == null && createdAtTo != null && keyWords == null && messageLevel != null) {
+      return elasticsearchRepo.findAllByCreatedAtBeforeAndMessageLevelAndApplicationName(
+          createdAtTo,
+          messageLevel,
+          appName,
+          pageable
+      );
+    }
+
+    if (createdAtFrom != null && createdAtTo == null && keyWords != null && messageLevel != null) {
+      return elasticsearchRepo.findAllByCreatedAtAfterAndMessageLevelAndKeyWordsAndApplicationName(
+          createdAtFrom,
+          messageLevel,
+          keyWords,
+          appName,
+          pageable
+      );
+    }
+
+    if (createdAtFrom == null && createdAtTo != null && keyWords != null && messageLevel != null) {
+      return elasticsearchRepo.findAllByCreatedAtBeforeAndMessageLevelAndKeyWordsAndApplicationName(
+          createdAtTo,
+          messageLevel,
+          keyWords,
+          appName,
+          pageable
+      );
+    }
+
+    if (createdAtFrom != null && createdAtTo != null && keyWords != null && messageLevel == null) {
       return elasticsearchRepo.findAllByCreatedAtBetweenAndKeyWordsAndApplicationName(
           createdAtFrom,
           createdAtTo,
@@ -58,7 +97,33 @@ public class ElasticService {
           pageable
       );
     }
-    if (createdAtFrom == null && createdAtTo != null && keyWords != null) {
+
+    if (createdAtFrom != null && createdAtTo != null &&
+        keyWords != null) { // && messageLevel != null
+      return elasticsearchRepo
+          .findAllByCreatedAtBetweenAndMessageLevelAndKeyWordsAndApplicationName(
+              createdAtFrom,
+              createdAtTo,
+              messageLevel,
+              keyWords,
+              appName,
+              pageable
+          );
+    }
+
+    if (createdAtFrom != null && createdAtTo != null &&
+        messageLevel != null) { //&& keyWords == null
+      return elasticsearchRepo
+          .findAllByCreatedAtBetweenAndMessageLevelAndApplicationName(
+              createdAtFrom,
+              createdAtTo,
+              messageLevel,
+              appName,
+              pageable
+          );
+    }
+
+    if (createdAtFrom == null && createdAtTo != null && keyWords != null && messageLevel == null) {
       return elasticsearchRepo.findAllByKeyWordsAndCreatedAtBeforeAndApplicationName(
           keyWords,
           createdAtTo,
@@ -66,7 +131,8 @@ public class ElasticService {
           pageable
       );
     }
-    if (createdAtFrom != null && createdAtTo == null && keyWords != null) {
+
+    if (createdAtFrom != null && createdAtTo == null && keyWords != null && messageLevel == null) {
       return elasticsearchRepo.findAllByKeyWordsAndCreatedAtAfterAndApplicationName(
           keyWords,
           createdAtFrom,
@@ -74,7 +140,8 @@ public class ElasticService {
           pageable
       );
     }
-    if (createdAtFrom != null && createdAtTo != null && keyWords == null) {
+
+    if (createdAtFrom != null && createdAtTo != null && keyWords == null && messageLevel == null) {
       return elasticsearchRepo.findAllByCreatedAtBetweenAndApplicationName(
           createdAtFrom,
           createdAtTo,
@@ -83,10 +150,6 @@ public class ElasticService {
       );
     }
     return elasticsearchRepo.findAllByKeyWordsAndApplicationName(keyWords, appName, pageable);
-  }
-
-  public void deleteAll() {
-    elasticsearchRepo.deleteAll();
   }
 
   public ElasticEntity saveLogInTable(BodyLogRequest bodyLogRequest, String appName) {
