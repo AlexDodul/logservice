@@ -49,7 +49,7 @@ pipelines:
           - target/**
     - step:
         name: Deployment
-        deployment: production
+        deployment: test
         script:
           - pipe: atlassian/heroku-deploy:0.1.1
             variables:
