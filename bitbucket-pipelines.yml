@@ -9,6 +9,7 @@ pipelines:
     - step:
         name: Build
         script:
+          - mvn -s .ci/settings.xml clean verify
           - cd src/main
           - git archive --format=tar.gz master -o logservice.tar.gz
         artifacts:
@@ -18,7 +19,7 @@ pipelines:
         name: Deploy to production
         deployment: production
         caches:
-          - pip
+          - maven
         script:
           - pipe: atlassian/heroku-deploy:0.1.1
             variables:
