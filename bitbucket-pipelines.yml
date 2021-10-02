@@ -2,26 +2,34 @@
 # Use a skeleton to build, test and deploy using manual and parallel steps
 # -----
 # You can specify a custom docker image from Docker Hub as your build environment.
+#image: maven:3.6.3
+#
+#pipelines:
+#  default:
+#    - step:
+#        name: Build
+#        script:
+#          - cd src/main
+#          - git archive --format=tar.gz master -o logservice.tar.gz
+#        artifacts:
+#          - src/main/logservice.tar.gz
+#
+#    - step:
+#        name: Deploy to production
+#        deployment: production
+#        caches:
+#          - maven
+#        script:
+#          - pipe: atlassian/heroku-deploy:0.1.1
+#            variables:
+#              HEROKU_API_KEY: 48f9aa2f-a930-4d1e-8ea3-5ba16e8009c2
+#              HEROKU_APP_NAME: log-service-ror
+#              ZIP_FILE: src/main/logservice.tar.gz
+
 image: maven:3.6.3
 
 pipelines:
   default:
     - step:
-        name: Build
-        script:
-          - cd src/main
-          - git archive --format=tar.gz master -o logservice.tar.gz
-        artifacts:
-          - src/main/logservice.tar.gz
-
-    - step:
-        name: Deploy to production
-        deployment: production
-        caches:
-          - maven
-        script:
-          - pipe: atlassian/heroku-deploy:0.1.1
-            variables:
-              HEROKU_API_KEY: 48f9aa2f-a930-4d1e-8ea3-5ba16e8009c2
-              HEROKU_APP_NAME: log-service-ror
-              ZIP_FILE: src/main/logservice.tar.gz
+        script: # Modify the commands below to build your repository.
+          - mvn clean install
