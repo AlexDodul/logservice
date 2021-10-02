@@ -40,28 +40,16 @@ image: maven:3.6.3
 pipelines:
   default:
     - step:
-        name: Clean Build
+        name: Clean and Package build
         caches:
           - maven
         script: # Modify the commands below to build your repository.
-          - mvn -B clean # -B batch mode makes Maven less verbose
-    - step:
-        name: Compile build
-        caches:
-          - maven
-        script: # Modify the commands below to build your repository.
-          - mvn -B compile # -B batch mode makes Maven less verbose
-    - step:
-        name: Package build
-        caches:
-          - maven
-        script: # Modify the commands below to build your repository.
-          - mvn -B package # -B batch mode makes Maven less verbose
+          - mvn -B clean package # -B batch mode makes Maven less verbose
         artifacts:
           - target/**
     - step:
         name: Deployment
-        deployment: Dev
+        deployment: test
         script:
           - pipe: atlassian/heroku-deploy:0.1.1
             variables:
