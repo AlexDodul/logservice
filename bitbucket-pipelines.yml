@@ -35,24 +35,58 @@
 #        script: # Modify the commands below to build your repository.
 #          - mvn clean install
 
+#image: maven:3.6.3
+#
+#pipelines:
+#  default:
+#    - step:
+#        name: Clean and Package build
+#        caches:
+#          - maven
+#        script: # Modify the commands below to build your repository.
+#          - mvn -B clean package # -B batch mode makes Maven less verbose
+#        artifacts:
+#          - target/**
+#    - step:
+#        name: Deployment
+#        deployment: test
+#        script:
+#          - pipe: atlassian/heroku-deploy:0.1.1
+#            variables:
+#              HEROKU_API_KEY: 48f9aa2f-a930-4d1e-8ea3-5ba16e8009c2
+#              HEROKU_APP_NAME: log-service-ror
+#              ZIP_FILE: 'target/logservice-1.0.0.jar'
+
 image: maven:3.6.3
 
 pipelines:
   default:
+    - parallel:
+        - step:
+            name: Build and Test
+            caches:
+              - maven
+            script:
+              - mvn -B verify --file pom.xml
+            after-script:
+              - pipe: atlassian/checkstyle-report:0.2.0
+        - step:
+            name: Security Scan
+            script:
+              - pipe: atlassian/git-secrets-scan:0.4.3
+        - step:
+            name: Create artifact
+            script:
+              - tar czfv logservice.tgz pom.xml src/
+            artifacts:
+              - logservice.tgz
     - step:
-        name: Clean and Package build
-        caches:
-          - maven
-        script: # Modify the commands below to build your repository.
-          - mvn -B clean package # -B batch mode makes Maven less verbose
-        artifacts:
-          - target/**
-    - step:
-        name: Deployment
+        name: Deploy to production
         deployment: test
         script:
-          - pipe: atlassian/heroku-deploy:0.1.1
+          - pipe: atlassian/heroku-deploy:1.2.1
             variables:
               HEROKU_API_KEY: 48f9aa2f-a930-4d1e-8ea3-5ba16e8009c2
               HEROKU_APP_NAME: log-service-ror
-              ZIP_FILE: 'target/logservice-1.0.0.jar'
+              ZIP_FILE: 'logservice.tgz'
+              DEBUG: 'true'
