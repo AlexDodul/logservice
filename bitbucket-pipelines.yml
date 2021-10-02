@@ -61,7 +61,7 @@ pipelines:
           - target/**
     - step:
         name: Deployment
-        deployment: test
+        deployment: Dev
         script:
           - pipe: atlassian/heroku-deploy:0.1.1
             variables:
