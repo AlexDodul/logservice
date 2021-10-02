@@ -57,7 +57,7 @@
 #              HEROKU_APP_NAME: log-service-ror
 #              ZIP_FILE: 'target/logservice-1.0.0.jar'
 
-image: maven:3.6.3
+image: maven:3.6.2
 
 pipelines:
   default:
@@ -68,6 +68,8 @@ pipelines:
               - maven
             script:
               - mvn -B verify --file pom.xml
+            after-script:
+              - pipe: atlassian/checkstyle-report:0.2.0
         - step:
             name: Security Scan
             script:
