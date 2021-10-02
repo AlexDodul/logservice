@@ -2,26 +2,52 @@
 # Use a skeleton to build, test and deploy using manual and parallel steps
 # -----
 # You can specify a custom docker image from Docker Hub as your build environment.
-image: maven:3.6.3
+#image: maven:3.6.3
+#
+#pipelines:
+#  default:
+#    - step:
+#        name: Build
+#        script:
+#          - cd src/main
+#          - git archive --format=tar.gz master -o logservice.tar.gz
+#        artifacts:
+#          - src/main/logservice.tar.gz
+#
+#    - step:
+#        name: Deploy to production
+#        deployment: production
+#        caches:
+#          - maven
+#        script:
+#          - pipe: atlassian/heroku-deploy:0.1.1
+#            variables:
+#              HEROKU_API_KEY: 48f9aa2f-a930-4d1e-8ea3-5ba16e8009c2
+#              HEROKU_APP_NAME: log-service-ror
+#              ZIP_FILE: src/main/logservice.tar.gz
+image: atlassian/default-image:2
 
 pipelines:
-  default:
-    - step:
-        name: Build
-        script:
-          - cd src/main
-          - git archive --format=tar.gz master -o logservice.tar.gz
-        artifacts:
-          - src/main/logservice.tar.gz
-
-    - step:
-        name: Deploy to production
-        deployment: production
-        caches:
-          - maven
-        script:
-          - pipe: atlassian/heroku-deploy:0.1.1
-            variables:
-              HEROKU_API_KEY: 48f9aa2f-a930-4d1e-8ea3-5ba16e8009c2
-              HEROKU_APP_NAME: log-service-ror
-              ZIP_FILE: src/main/logservice.tar.gz
+  branches:
+    master:  # Trigger this for any pushes to the master branch.
+      - step:
+          name: Build and Deploy Snapshot Artifact
+          trigger: automatic
+          caches:
+            - maven # Cache any dependencies we download, speeds up build times.
+          script:
+            - bash create-settings.sh # Create our settings.xml file.  Will fail if environment variables aren't set properly.
+            - mvn -B -s settings.xml verify # Ensure all artifacts build successfully before we attempt deploy in order to prevent partial deploys.
+            - mvn -B -s settings.xml deploy # Now that all builds have completed, we can deploy all the artifacts.
+      - step:
+          name: Create Release Version # This will create a release version and commit it to master.  It will then be picked up and deployed in the first step.
+          trigger: manual
+          caches:
+            - maven
+          script:
+            - bash create-settings.sh # Create our settings.xml file.  Will fail if environment variables aren't set properly.
+            - bash validate-release-configuration.sh  # Do the best we can to ensure we have the SSH keys and env variables in place before we try to prepare a release.
+            - git config --global user.email "$GIT_USER_EMAIL"
+            - git config --global user.name "$GIT_USER_NAME"
+            - mvn -B -s settings.xml -DdryRun=true release:prepare # Ensure that most things will run properly before we do the real work.
+            - mvn -B -s settings.xml release:clean release:prepare # This bumps the versions in the poms, creates new commits, which will then get built by the master branch trigger.
