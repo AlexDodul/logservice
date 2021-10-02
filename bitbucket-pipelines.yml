@@ -26,45 +26,45 @@
 #              HEROKU_APP_NAME: log-service-ror
 #              ZIP_FILE: src/main/logservice.tar.gz
 
-#image: maven:3.6.3
-#
-#pipelines:
-#  default:
-#    - step:
-#        name: Build
-#        script: # Modify the commands below to build your repository.
-#          - mvn clean install
-
 image: maven:3.6.3
 
 pipelines:
   default:
     - step:
-        name: Clean Build
-        caches:
-          - maven
+        name: Build
         script: # Modify the commands below to build your repository.
-          - mvn -B clean # -B batch mode makes Maven less verbose
-    - step:
-        name: Compile build
-        caches:
-          - maven
-        script: # Modify the commands below to build your repository.
-          - mvn -B compile # -B batch mode makes Maven less verbose
-    - step:
-        name: Package build
-        caches:
-          - maven
-        script: # Modify the commands below to build your repository.
-          - mvn -B package # -B batch mode makes Maven less verbose
-        artifacts:
-          - target/**
-    - step:
-        name: Deployment
-        deployment: Dev
-        script:
-          - pipe: atlassian/heroku-deploy:0.1.1
-            variables:
-              HEROKU_API_KEY: 48f9aa2f-a930-4d1e-8ea3-5ba16e8009c2
-              HEROKU_APP_NAME: log-service-ror
-              ZIP_FILE: 'target/logservice-1.0.0.jar'
+          - mvn clean install
+
+#image: maven:3.6.3
+#
+#pipelines:
+#  default:
+#    - step:
+#        name: Clean Build
+#        caches:
+#          - maven
+#        script: # Modify the commands below to build your repository.
+#          - mvn -B clean # -B batch mode makes Maven less verbose
+#    - step:
+#        name: Compile build
+#        caches:
+#          - maven
+#        script: # Modify the commands below to build your repository.
+#          - mvn -B compile # -B batch mode makes Maven less verbose
+#    - step:
+#        name: Package build
+#        caches:
+#          - maven
+#        script: # Modify the commands below to build your repository.
+#          - mvn -B package # -B batch mode makes Maven less verbose
+#        artifacts:
+#          - target/**
+#    - step:
+#        name: Deployment
+#        deployment: Dev
+#        script:
+#          - pipe: atlassian/heroku-deploy:0.1.1
+#            variables:
+#              HEROKU_API_KEY: 48f9aa2f-a930-4d1e-8ea3-5ba16e8009c2
+#              HEROKU_APP_NAME: log-service-ror
+#              ZIP_FILE: 'target/logservice-1.0.0.jar'
