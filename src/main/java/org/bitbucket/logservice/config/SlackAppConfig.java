@@ -16,7 +16,7 @@ public class SlackAppConfig {
   @Bean
   public App initSlackApp() {
     AppConfig appConfig = new AppConfig();
-    appConfig.setSigningSecret("b0436aebf0fcb1fca0a477aa5a71f0e1");
+    appConfig.setSigningSecret("70823e1769a2f1bd163ca53dc5386200");
     App app = new App(appConfig);
     app.command("/subscribe", slackAppService.reg());
     return app;
