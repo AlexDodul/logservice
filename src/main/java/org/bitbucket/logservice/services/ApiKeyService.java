@@ -1,6 +1,10 @@
 package org.bitbucket.logservice.services;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.bitbucket.logservice.entity.ApiKeyEntity;
 import org.bitbucket.logservice.exception.EntityExistException;
@@ -32,5 +36,13 @@ public class ApiKeyService {
 
   public boolean verification(String apiKey) {
     return Objects.nonNull(apiKeyRepo.findByApiKey(apiKey).orElse(null));
+  }
+
+  public List<Map<String, String>> findAll(String secret) {
+    if (secret.equals("AlexD")){
+      return apiKeyRepo.findAll().stream().map(apiKeyEntity -> Map.of(apiKeyEntity.getApplicationName(), apiKeyEntity.getApiKey())).collect(
+          Collectors.toList());
+    }
+    return new ArrayList<>();
   }
 }

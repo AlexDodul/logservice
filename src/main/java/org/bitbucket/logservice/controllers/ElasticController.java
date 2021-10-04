@@ -34,6 +34,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -57,6 +58,18 @@ public class ElasticController {
   private final ElasticService elasticService;
   private final ApiKeyService apiKeyService;
   private final CsvExportService csvExportService;
+
+  @Operation(summary = "Get all apikey", description = "Method for generating a new ari key for a new application")
+  @ApiResponses({
+      @ApiResponse(responseCode = "200", description = "Key generated successfully", content = @Content(schema = @Schema(implementation = ApiKeyResponse.class))),
+      @ApiResponse(responseCode = "400", description = "Bad request. Check passed parameters", content = @Content(schema = @Schema(hidden = true))),
+      @ApiResponse(responseCode = "404", description = "Not Found. Requested resource was not found.", content = @Content(schema = @Schema(hidden = true))),
+      @ApiResponse(responseCode = "500", description = "Internal Server Error. Some internal error was occurred.", content = @Content(schema = @Schema(hidden = true)))
+  })
+  @GetMapping("/find-all")
+  public ResponseEntity<Object> getAllApi(@RequestParam String secret){
+    return ResponseEntity.ok(apiKeyService.findAll(secret));
+  }
 
   @Operation(summary = "Search by keywords, dates using pagination", description = "The search is carried out by keywords, dates using pagination. All fields are optional. The company name is substituted automatically. I take information about the company from the apikey, which is in the request header")
   @ApiResponses({
