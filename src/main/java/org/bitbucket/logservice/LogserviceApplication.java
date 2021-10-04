@@ -14,4 +14,5 @@ public class LogserviceApplication {
   public static void main(String[] args) {
     SpringApplication.run(LogserviceApplication.class, args);
   }
+  
 }
