@@ -6,7 +6,7 @@ import lombok.Data;
 import org.elasticsearch.index.VersionType;
 import org.joda.time.Instant;
 import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.elasticsearch.annotations.Field;
 
 @Data
 @Document(indexName = "api-key", versionType = VersionType.INTERNAL)

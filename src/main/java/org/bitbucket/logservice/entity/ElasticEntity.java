@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import org.elasticsearch.index.VersionType;
 import org.joda.time.Instant;
 import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.elasticsearch.annotations.Field;
 
 @Document(indexName = "elastic_data", versionType = VersionType.INTERNAL)
 @Data

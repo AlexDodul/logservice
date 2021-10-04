@@ -1,14 +1,4 @@
 spring:
-  data:
-    mongodb:
-      host: 127.0.0.1
-      port: 27017
-      database: logservice
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/logs
-    username: postgres
-    password: postgres
   elasticsearch:
     rest:
       username: elastic
