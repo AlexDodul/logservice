@@ -12,7 +12,8 @@ spring:
   elasticsearch:
     rest:
       username: elastic
-      password: wIoWKeSIXkU8SsGZrC90
+      password: 0OUXZO6UKYnkJisGnIm5d8wn
+      uris: https://logservice.es.eastus2.azure.elastic-cloud.com:9243
   mvc:
     async:
       request-timeout: 5000
