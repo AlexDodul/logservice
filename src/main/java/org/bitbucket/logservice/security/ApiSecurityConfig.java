@@ -52,6 +52,7 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
   public void configure(WebSecurity web) {
     web.ignoring().antMatchers("/api/logs/generate-api-key");
     web.ignoring().antMatchers("/api/logs/find-all");
+    web.ignoring().antMatchers("/api/logs/token-from-bot");
     web.ignoring().antMatchers("/swagger-ui/**", "/swagger-ui**", "/v3/api-docs/**");
   }
 }
