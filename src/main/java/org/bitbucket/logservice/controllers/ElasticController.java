@@ -182,15 +182,24 @@ public class ElasticController {
     return ResponseEntity.ok(result);
   }
 
-  @GetMapping(path = "/token-from-bot")
-  public ResponseEntity<Object> getTokenBot(@RequestParam("code") String code) {
+//  @GetMapping(path = "/token-from-bot")
+//  public ResponseEntity<Object> getTokenBot(@RequestParam("code") String code) {
+//    App app = new App();
+//    try {
+//      app.client().oauthAccess(OAuthAccessRequest.builder().code(code).build());
+//    } catch (IOException | SlackApiException e) {
+//      log.error(e.getMessage());
+//    }
+//    return ResponseEntity.ok(app);
+//  }
+
+  @RequestMapping("/token-from-bot")
+  public void getToken(@RequestParam OAuthAccessRequest authAccessRequest){
     App app = new App();
     try {
-      app.client().oauthAccess(OAuthAccessRequest.builder().code(code).build());
-//      log.info("-=SOUT=- {}", oAuthV2AccessResponse.);
+      app.client().oauthAccess(authAccessRequest);
     } catch (IOException | SlackApiException e) {
-      log.error(e.getMessage());
+      e.printStackTrace();
     }
-    return ResponseEntity.ok(app);
   }
 }
