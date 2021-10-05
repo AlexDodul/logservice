@@ -182,8 +182,9 @@ public class ElasticController {
     return ResponseEntity.ok(result);
   }
 
-  @GetMapping(path = "/token-from-bot", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+  @GetMapping(path = "/token-from-bot")
   public ResponseEntity<Object> getTokenBot(@RequestParam OAuthAccessRequest code) {
+    log.error(code.getCode());
     App app = new App();
     try {
       app.client().oauthAccess(code);
