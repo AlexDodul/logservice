@@ -1,5 +1,6 @@
 package org.bitbucket.logservice.controllers;
 
+import com.slack.api.bolt.App;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
@@ -174,5 +175,13 @@ public class ElasticController {
   public ResponseEntity<List<ElasticEntity>> allLogs() {
     List<ElasticEntity> result = elasticService.readAllLogs();
     return ResponseEntity.ok(result);
+  }
+
+  @PostMapping(path = "/token-from-bot")
+  public ResponseEntity<Object> getTokenBot(@RequestBody Object obj){
+    App app = new App();
+//    app.client().oauthAccess()
+    System.out.println(obj.toString());
+    return null;
   }
 }
