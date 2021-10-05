@@ -2,7 +2,7 @@ package org.bitbucket.logservice.controllers;
 
 import com.slack.api.bolt.App;
 import com.slack.api.methods.SlackApiException;
-import com.slack.api.methods.request.oauth.OAuthAccessRequest;
+import com.slack.api.methods.request.oauth.OAuthV2AccessRequest;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
@@ -193,11 +193,11 @@ public class ElasticController {
 //    return ResponseEntity.ok(app);
 //  }
 
-  @PostMapping("/token-from-bot")
-  public void getToken(@RequestParam OAuthAccessRequest authAccessRequest){
+  @GetMapping("/token-from-bot")
+  public void getToken(@RequestParam OAuthV2AccessRequest authAccessRequest){
     App app = new App();
     try {
-      app.client().oauthAccess(authAccessRequest);
+      app.client().oauthV2Access(authAccessRequest);
     } catch (IOException | SlackApiException e) {
       e.printStackTrace();
     }
