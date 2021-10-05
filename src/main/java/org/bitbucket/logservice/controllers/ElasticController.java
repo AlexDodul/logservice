@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.bitbucket.logservice.entity.ApiKeyEntity;
 import org.bitbucket.logservice.entity.ElasticEntity;
 import org.bitbucket.logservice.payload.request.ApplicationNameRequest;
@@ -46,6 +47,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/logs")
@@ -188,7 +190,7 @@ public class ElasticController {
     } catch (IOException | SlackApiException e) {
       e.printStackTrace();
     }
-    System.out.println("-=SOUT=- " + authAccessRequest.getClientId());
+    log.info("-=SOUT=- {}", authAccessRequest.getClientId());
     return ResponseEntity.ok(app);
   }
 }
