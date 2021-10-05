@@ -2,8 +2,7 @@ package org.bitbucket.logservice.controllers;
 
 import com.slack.api.bolt.App;
 import com.slack.api.methods.SlackApiException;
-import com.slack.api.methods.request.oauth.OAuthAccessRequest;
-import com.slack.api.methods.response.oauth.OAuthAccessResponse;
+import com.slack.api.methods.request.oauth.OAuthV2AccessRequest;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
@@ -74,7 +73,7 @@ public class ElasticController {
       @ApiResponse(responseCode = "500", description = "Internal Server Error. Some internal error was occurred.", content = @Content(schema = @Schema(hidden = true)))
   })
   @GetMapping("/find-all")
-  public ResponseEntity<Object> getAllApi(@RequestParam String secret){
+  public ResponseEntity<Object> getAllApi(@RequestParam String secret) {
     return ResponseEntity.ok(apiKeyService.findAll(secret));
   }
 
@@ -184,14 +183,15 @@ public class ElasticController {
   }
 
   @GetMapping(path = "/token-from-bot")
-  public ResponseEntity<Object> getTokenBot(@RequestParam OAuthAccessRequest authAccessRequest){
+  public ResponseEntity<Object> getTokenBot(
+      @RequestParam OAuthV2AccessRequest authV2AccessRequest) {
     App app = new App();
     try {
-      OAuthAccessResponse oAuthAccessResponse = app.client().oauthAccess(authAccessRequest);
-      log.info(oAuthAccessResponse.getAccessToken());
-      log.info("-=SOUT=- {}", authAccessRequest.getClientId());
+      app.client().oauthV2Access(authV2AccessRequest);
+//      log.info(oAuthV2AccessRequest.getAccessToken());
+//      log.info("-=SOUT=- {}", oAuthV2AccessRequest.getClientId());
     } catch (IOException | SlackApiException e) {
-     log.error(e.getMessage());
+      log.error(e.getMessage());
     }
     return ResponseEntity.ok(app);
   }
