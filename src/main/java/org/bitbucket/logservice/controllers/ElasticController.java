@@ -184,6 +184,7 @@ public class ElasticController {
 
   @GetMapping(path = "/token-from-bot")
   public ResponseEntity<Object> getTokenBot(@RequestParam OAuthAccessRequest code) {
+    System.out.println("Hello, logs!");
     log.error(code.getCode());
     App app = new App();
     try {
