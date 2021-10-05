@@ -16,5 +16,6 @@ app:
     secret-key: SecretKeyGrizzly
 slack:
   token: xoxb-2518902811235-2585938444480-07lV2jkicJ1JGV8PMvwRu5d9
+  signing-secret: 70823e1769a2f1bd163ca53dc5386200
 logging.level:
   com.slack.api: DEBUG
