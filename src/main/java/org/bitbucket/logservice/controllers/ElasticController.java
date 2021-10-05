@@ -188,6 +188,7 @@ public class ElasticController {
     } catch (IOException | SlackApiException e) {
       e.printStackTrace();
     }
+    System.out.println("-=SOUT=- " + authAccessRequest.getClientId());
     return ResponseEntity.ok(app);
   }
 }
