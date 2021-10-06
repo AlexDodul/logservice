@@ -21,11 +21,10 @@ public class FilesUploadService {
 
   public void sendFile(String log, String channelId) {
     try {
-      //@Value("${slack.token}")
       String botToken = channelRepo.findByChannelIdContains(channelId)
           .orElseThrow(() -> new EntityNotFoundException("Entity not found")).getAccessToken();
 
-      System.out.println("Bot Token" + botToken);
+      System.out.println("Bot Token " + botToken);
 
       String url = "https://slack.com/api/files.upload";
       HttpClient httpclient = HttpClientBuilder.create().disableContentCompression().build();

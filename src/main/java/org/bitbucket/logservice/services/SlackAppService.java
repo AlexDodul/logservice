@@ -62,7 +62,7 @@ public class SlackAppService {
 
       return ctx.ack(r -> r
           .text("Application '" + apiKeyEntity.getApplicationName() +
-              "' registered successfully     " + req.getPayload().getApiAppId())
+              "' registered successfully")
           .responseType(ResponseTypes.inChannel));
     };
   }

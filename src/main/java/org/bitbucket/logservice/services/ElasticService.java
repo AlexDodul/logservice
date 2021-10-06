@@ -176,7 +176,6 @@ public class ElasticService {
     if (channelsId != null) {
       if (bodyLogRequest.getBodyLog().length() <= CHARACTER_LIMIT_FOR_MESSAGE) {
         for (String channelId : channelsId) {
-
           slackService.sendMessageToSlack(entity, channelId);
         }
       } else {
