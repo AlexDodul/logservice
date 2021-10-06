@@ -204,8 +204,8 @@ public class ElasticController {
     App app = new App().asOAuthApp(true);
     OAuthV2AccessRequest request = OAuthV2AccessRequest.builder()
         .code(code)
-        .clientId(clientId)
-        .clientSecret(clientSecret)
+        .clientId("2518902811235.2555532277206")
+        .clientSecret("37940eeb699e8cc1259d44533e587ee9")
         .build();
     try {
       OAuthV2AccessResponse oAuthV2AccessResponse = app.client().oauthV2Access(request);
