@@ -41,6 +41,7 @@ public class SlackService {
               .build()))
           .token(botToken)
           .channel(channelId)
+
       );
     } catch (IOException | SlackApiException e) {
       e.printStackTrace();
