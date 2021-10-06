@@ -1,8 +1,6 @@
 package org.bitbucket.logservice.controllers;
 
 import com.slack.api.bolt.App;
-import com.slack.api.methods.SlackApiException;
-import com.slack.api.methods.request.oauth.OAuthV2AccessRequest;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
@@ -15,7 +13,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -188,15 +185,16 @@ public class ElasticController {
   }
 
   @GetMapping(path = "/token-from-bot")
-  public ResponseEntity<Object> getTokenBot(@RequestParam OAuthV2AccessRequest code) {
+  public ResponseEntity<Object> getTokenBot(HttpServletRequest request) {
+    log.info(request.getQueryString());
     System.out.println("--== Hello, logs! /token-from-bot ==--");
-    log.error("--== Code OAuthV2AccessRequest ==--{}", code.getCode());
+//    log.error("--== Code OAuthV2AccessRequest ==--{}", code.getCode());
     App app = new App().asOAuthApp(true);
-    try {
-      app.client().oauthV2Access(code);
-    } catch (IOException | SlackApiException e) {
-      log.error(e.getMessage());
-    }
+//    try {
+////      app.client().oauthV2Access(code);
+//    } catch (IOException | SlackApiException e) {
+//      log.error(e.getMessage());
+//    }
     return ResponseEntity.ok(app);
   }
 
