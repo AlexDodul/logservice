@@ -9,5 +9,5 @@ public interface ChannelRepo extends ElasticsearchRepository<ChannelEntity, Stri
 
   Optional<ChannelEntity> findByUserId(String userId);
 
-  Optional<ChannelEntity> findByChannelId(String channelId);
+  Optional<ChannelEntity> findByChannelId(String channelId); // findByChannelIdContains - переделать в лист и использовать этот метод
 }
