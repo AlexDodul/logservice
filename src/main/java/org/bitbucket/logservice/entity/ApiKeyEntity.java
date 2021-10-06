@@ -31,4 +31,5 @@ public class ApiKeyEntity {
     this.applicationName = applicationName;
     this.apiKey = apiKey;
   }
+
 }
