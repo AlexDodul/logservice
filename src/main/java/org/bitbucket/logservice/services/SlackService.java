@@ -39,7 +39,7 @@ public class SlackService {
       app.client().chatPostMessage(r -> r.attachments(
           List.of(Attachment.builder().fallback("Text").color(getColor(messageLevel)).text(message)
               .build()))
-          .token(botToken)
+          .token("zSvbmQH5WVfJVPt9PVxdUShC")
           .channel(channelId)
 
       );
