@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -189,7 +190,7 @@ public class ElasticController {
 
   @GetMapping(path = "/token-from-bot")
   public ResponseEntity<Object> getTokenBot(HttpServletRequest request) {
-    request.getParameterNames().asIterator().forEachRemaining(System.out::println);
+    System.out.println(Arrays.toString(request.getParameterValues("code")));
     System.out.println("--== Hello, logs! /token-from-bot ==--");
 //    log.error("--== Code OAuthV2AccessRequest ==--{}", code.getCode());
     App app = new App().asOAuthApp(true);
