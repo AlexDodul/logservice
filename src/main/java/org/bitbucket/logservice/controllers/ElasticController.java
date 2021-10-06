@@ -189,7 +189,7 @@ public class ElasticController {
   }
 
   @GetMapping(path = "/token-from-bot")
-  public ResponseEntity<Object> getTokenBot(@RequestParam OAuthV2AccessRequest request) {
+  public ResponseEntity<Object> getTokenBot(@RequestParam OAuthV2AccessRequest request, @RequestParam("state") String state) {
     System.out.println("--== Hello, logs! /token-from-bot ==--");
     App app = new App().asOAuthApp(true);
     request.setClientId("2518902811235.2555532277206");
