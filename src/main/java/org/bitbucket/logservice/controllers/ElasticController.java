@@ -191,7 +191,7 @@ public class ElasticController {
   public ResponseEntity<Object> getTokenBot(@RequestParam OAuthV2AccessRequest code) {
     System.out.println("--== Hello, logs! /token-from-bot ==--");
     log.error("--== Code OAuthV2AccessRequest ==--{}", code.getCode());
-    App app = new App();
+    App app = new App().asOAuthApp(true);
     try {
       app.client().oauthV2Access(code);
     } catch (IOException | SlackApiException e) {
