@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bitbucket.logservice.entity.ElasticEntity;
 import org.bitbucket.logservice.repositories.ChannelRepo;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -21,9 +20,6 @@ public class SlackService {
 
   private static final String NEW_LINE = "\n";
   private final ChannelRepo channelRepo;
-
-  @Value("${slack.token}")
-  private String botToken;
 
   public void sendMessageToSlack(ElasticEntity message, String channelId) {
     Date date = new Date(message.getCreatedAt());

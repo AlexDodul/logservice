@@ -195,7 +195,7 @@ public class ElasticService {
   @Scheduled(cron = "@daily")
   public void removeOldDate() {
     Calendar cal = Calendar.getInstance();
-    cal.add(Calendar.DATE, -5);
+    cal.add(Calendar.DATE, -60);
     Date previousMonth = cal.getTime();
     elasticsearchRepo.deleteAllByCreatedAtBefore(previousMonth.getTime());
     log.info("Delete old data");

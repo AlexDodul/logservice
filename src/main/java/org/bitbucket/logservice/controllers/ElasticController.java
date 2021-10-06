@@ -38,6 +38,7 @@ import org.bitbucket.logservice.services.CsvExportService;
 import org.bitbucket.logservice.services.ElasticService;
 import org.bitbucket.logservice.utils.HttpServletUtils;
 import org.bitbucket.logservice.utils.TransferObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -69,6 +70,11 @@ public class ElasticController {
   private final CsvExportService csvExportService;
   private final ChannelRepo channelRepo;
 
+  @Value("${slack.client-id}")
+  private String clientId;
+  @Value("${slack.clientS-secret}")
+  private String clientSecret;
+
   @Operation(summary = "Get all apikey", description = "Method for generating a new ari key for a new application")
   @ApiResponses({
       @ApiResponse(responseCode = "200", description = "Key generated successfully", content = @Content(schema = @Schema(implementation = ApiKeyResponse.class))),
@@ -78,12 +84,7 @@ public class ElasticController {
   })
   @GetMapping("/find-all")
   public ResponseEntity<Object> getAllApi(@RequestParam String secret) {
-
-
     channelRepo.findAll().forEach(System.out::println);
-
-    elasticService.readAllLogs().forEach(System.out::println);
-
     return ResponseEntity.ok(apiKeyService.findAll(secret));
   }
 
@@ -203,14 +204,12 @@ public class ElasticController {
     App app = new App().asOAuthApp(true);
     OAuthV2AccessRequest request = OAuthV2AccessRequest.builder()
         .code(code)
-        .clientId("2518902811235.2555532277206")
-        .clientSecret("37940eeb699e8cc1259d44533e587ee9")
+        .clientId(clientId)
+        .clientSecret(clientSecret)
         .build();
     try {
       OAuthV2AccessResponse oAuthV2AccessResponse = app.client().oauthV2Access(request);
-      this.channelRepo.save(new ChannelEntity(oAuthV2AccessResponse.getAuthedUser().getId(), oAuthV2AccessResponse.getAccessToken()));
-      System.out.println("Access - Token  " + oAuthV2AccessResponse.getAccessToken());
-      System.out.println("Get User ID  " + oAuthV2AccessResponse.getAuthedUser().getId());
+      channelRepo.save(new ChannelEntity(oAuthV2AccessResponse.getAuthedUser().getId(), oAuthV2AccessResponse.getAccessToken()));
     } catch (IOException | SlackApiException e) {
       log.error(e.getMessage());
     }
