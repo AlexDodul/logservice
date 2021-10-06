@@ -183,6 +183,7 @@ public class ElasticController {
   @SecurityRequirement(name = "X-Api-Key")
   public ResponseEntity<List<ElasticEntity>> allLogs() {
     List<ElasticEntity> result = elasticService.readAllLogs();
+    log.error("--== All logs ==--");
     return ResponseEntity.ok(result);
   }
 
