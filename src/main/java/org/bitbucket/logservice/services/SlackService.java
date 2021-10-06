@@ -73,7 +73,8 @@ public class SlackService {
           List.of(Attachment.builder().fallback("Text").color(getColor(entity.getMessageLevel()))
               .text("File")
               .build()))
-          .token(botToken)
+          .token(channelRepo.findByChannelIdContains(channelId)
+              .orElseThrow(() -> new EntityNotFoundException("Entity not found")).getAccessToken())
           .channel(channelId)
       );
     } catch (IOException | SlackApiException e) {
