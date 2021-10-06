@@ -22,7 +22,7 @@ public class SlackAppService {
           repo.findByApiKey(req.getPayload().getText()).orElse(null);
       if (Objects.isNull(apiKeyEntity)) {
         return ctx.ack(r -> r.text(
-            "This application doesn't exist '" + req.getPayload().getText() +
+            "This application doesn't exist '" + req.getPayload().getText() + req.getPayload().getApiAppId() +
                 '\'').responseType(ResponseTypes.inChannel));
       }
       List<String> channelId = apiKeyEntity.getChannelId();
@@ -47,7 +47,7 @@ public class SlackAppService {
 
       return ctx.ack(r -> r
           .text("Application '" + apiKeyEntity.getApplicationName() +
-              "' registered successfully     " + ctx.getBotId())
+              "' registered successfully     " + req.getPayload().getApiAppId())
           .responseType(ResponseTypes.inChannel));
     };
   }
