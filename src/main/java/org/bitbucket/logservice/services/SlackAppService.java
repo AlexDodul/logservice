@@ -42,7 +42,7 @@ public class SlackAppService {
       repo.save(apiKeyEntity);
 
       return ctx.ack(r -> r
-          .text("Application '" + apiKeyEntity.getApplicationName() + "' registered successfully" + req.getPayload().getToken())
+          .text("Application '" + apiKeyEntity.getApplicationName() + "' registered successfully" + req.getPayload().getApiAppId())
           .responseType(ResponseTypes.inChannel));
     };
   }
