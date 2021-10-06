@@ -72,7 +72,7 @@ public class ElasticController {
 
   @Value("${slack.client-id}")
   private String clientId;
-  @Value("${slack.clientS-secret}")
+  @Value("${slack.client-secret}")
   private String clientSecret;
 
   @Operation(summary = "Get all apikey", description = "Method for generating a new ari key for a new application")
@@ -199,7 +199,7 @@ public class ElasticController {
   }
 
   @GetMapping(path = "/token-from-bot")
-  public void getTokenBot(@RequestParam("code") String code, @RequestParam("state") String state) {
+  public ResponseEntity<Object> getTokenBot(@RequestParam("code") String code, @RequestParam("state") String state) {
 
     App app = new App().asOAuthApp(true);
     OAuthV2AccessRequest request = OAuthV2AccessRequest.builder()
@@ -213,5 +213,6 @@ public class ElasticController {
     } catch (IOException | SlackApiException e) {
       log.error(e.getMessage());
     }
+    return ResponseEntity.ok(app);
   }
 }
