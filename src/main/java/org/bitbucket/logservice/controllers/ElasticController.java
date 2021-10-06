@@ -1,6 +1,9 @@
 package org.bitbucket.logservice.controllers;
 
 import com.slack.api.bolt.App;
+import com.slack.api.methods.SlackApiException;
+import com.slack.api.methods.request.oauth.OAuthV2AccessRequest;
+import com.slack.api.methods.response.oauth.OAuthV2AccessResponse;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
@@ -13,7 +16,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.Arrays;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -186,16 +189,17 @@ public class ElasticController {
   }
 
   @GetMapping(path = "/token-from-bot")
-  public ResponseEntity<Object> getTokenBot(HttpServletRequest request) {
-    System.out.println(Arrays.stream(request.getParameterValues("code")).findFirst().orElse(null));
+  public ResponseEntity<Object> getTokenBot(OAuthV2AccessRequest request) {
     System.out.println("--== Hello, logs! /token-from-bot ==--");
-//    log.error("--== Code OAuthV2AccessRequest ==--{}", code.getCode());
     App app = new App().asOAuthApp(true);
-//    try {
-//      app.client().oauthV2Access(OAuthV2AccessRequest.builder().code(Arrays.stream(request.getParameterValues("code")).findFirst().orElse(null)).build());
-//    } catch (IOException | SlackApiException e) {
-//      log.error(e.getMessage());
-//    }
+    request.setClientId("2518902811235.2555532277206");
+    request.setClientSecret("37940eeb699e8cc1259d44533e587ee9");
+    try {
+      OAuthV2AccessResponse oAuthV2AccessResponse = app.client().oauthV2Access(request);
+      System.out.println(oAuthV2AccessResponse.getAccessToken());
+    } catch (IOException | SlackApiException e) {
+      log.error(e.getMessage());
+    }
     return ResponseEntity.ok(app);
   }
 
