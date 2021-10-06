@@ -45,7 +45,6 @@ public class SlackService {
           .token(channelRepo.findByChannelIdContains(channelId)
               .orElseThrow(() -> new EntityNotFoundException("Entity not found")).getAccessToken())
           .channel(channelId)
-
       );
     } catch (IOException | SlackApiException e) {
       e.printStackTrace();
