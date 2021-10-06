@@ -42,7 +42,7 @@ public class SlackService {
       app.client().chatPostMessage(r -> r.attachments(
           List.of(Attachment.builder().fallback("Text").color(getColor(messageLevel)).text(message)
               .build()))
-          .token(channelRepo.findByChannelId(channelId)
+          .token(channelRepo.findByChannelIdContains(channelId)
               .orElseThrow(() -> new EntityNotFoundException("Entity not found")).getAccessToken())
           .channel(channelId)
 

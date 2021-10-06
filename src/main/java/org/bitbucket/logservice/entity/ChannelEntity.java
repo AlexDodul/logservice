@@ -1,5 +1,6 @@
 package org.bitbucket.logservice.entity;
 
+import java.util.List;
 import javax.persistence.Id;
 import lombok.Data;
 import org.elasticsearch.index.VersionType;
@@ -20,7 +21,7 @@ public class ChannelEntity {
   private String accessToken;
 
   @Field
-  private String channelId;
+  private List<String> channelId;
 
   public ChannelEntity(String userId, String accessToken) {
     this.userId = userId;

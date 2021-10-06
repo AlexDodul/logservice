@@ -78,6 +78,7 @@ public class ElasticController {
   })
   @GetMapping("/find-all")
   public ResponseEntity<Object> getAllApi(@RequestParam String secret) {
+    this.channelRepo.findAll().forEach(System.out::println);
     return ResponseEntity.ok(apiKeyService.findAll(secret));
   }
 

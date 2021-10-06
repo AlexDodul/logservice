@@ -46,7 +46,12 @@ public class SlackAppService {
       repo.save(apiKeyEntity);
       ChannelEntity channelEntity = channelRepo.findByUserId(req.getPayload().getUserId())
           .orElseThrow(() -> new EntityNotFoundException("Entity not found"));
-      channelEntity.setChannelId(req.getPayload().getChannelId());
+      List<String> channelIds = new ArrayList<>();
+      if (Objects.nonNull(channelEntity.getChannelId())) {
+        channelIds = channelEntity.getChannelId();
+      }
+      channelIds.add(req.getPayload().getChannelId());
+      channelEntity.setChannelId(channelIds);
       channelRepo.save(channelEntity);
 
       Object botId = req.getContext().getBotId();
