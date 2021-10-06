@@ -189,7 +189,7 @@ public class ElasticController {
 
   @GetMapping(path = "/token-from-bot")
   public ResponseEntity<Object> getTokenBot(HttpServletRequest request) {
-    log.info(request.getParameterMap().toString());
+    request.getParameterMap().values().forEach(System.out::println);
     System.out.println("--== Hello, logs! /token-from-bot ==--");
 //    log.error("--== Code OAuthV2AccessRequest ==--{}", code.getCode());
     App app = new App().asOAuthApp(true);
