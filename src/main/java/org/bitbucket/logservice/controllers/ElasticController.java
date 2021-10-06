@@ -190,12 +190,12 @@ public class ElasticController {
 
   @GetMapping(path = "/token-from-bot")
   public ResponseEntity<Object> getTokenBot(HttpServletRequest request) {
-    System.out.println(Arrays.toString(request.getParameterValues("code")));
+    System.out.println(Arrays.stream(request.getParameterValues("code")).findFirst().orElse(null));
     System.out.println("--== Hello, logs! /token-from-bot ==--");
 //    log.error("--== Code OAuthV2AccessRequest ==--{}", code.getCode());
     App app = new App().asOAuthApp(true);
     try {
-      app.client().oauthV2Access(OAuthV2AccessRequest.builder().code(request.getParameter("code")).build());
+      app.client().oauthV2Access(OAuthV2AccessRequest.builder().code(Arrays.stream(request.getParameterValues("code")).findFirst().orElse(null)).build());
     } catch (IOException | SlackApiException e) {
       log.error(e.getMessage());
     }
