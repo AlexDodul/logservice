@@ -108,6 +108,7 @@ public class ElasticController {
         pageable,
         HttpServletUtils.getCompanyName(httpServletRequest)
     );
+    log.error("--== Method filter api-key ==--");
     return ResponseEntity.ok(TransferObject.toLogResponse(result));
   }
 
@@ -126,6 +127,7 @@ public class ElasticController {
       HttpServletRequest httpServletRequest) {
     ElasticEntity elasticEntity = elasticService
         .saveLogInTable(bodyLogRequest, HttpServletUtils.getCompanyName(httpServletRequest));
+    log.error("--== Method save api-key ==--");
     return ResponseEntity.ok(new LogResponse(
         new Date(elasticEntity.getCreatedAt()),
         elasticEntity.getMessageLevel(),
@@ -145,6 +147,7 @@ public class ElasticController {
   public ResponseEntity<ApiKeyResponse> generateApiKey(
       @Valid @RequestBody ApplicationNameRequest applicationNameRequest) {
     ApiKeyEntity apiKey = apiKeyService.createApiKey(applicationNameRequest);
+    log.error("--== Method get api-key ==--");
     return ResponseEntity.ok(new ApiKeyResponse(apiKey.getApiKey()));
   }
 
@@ -173,6 +176,7 @@ public class ElasticController {
     csvExportService
         .writeEmployeesToCsv(servletResponse, pageable, filterRequest,
             HttpServletUtils.getCompanyName(httpServletRequest));
+    log.error("--== File .csv ==--");
   }
 
   @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -184,8 +188,8 @@ public class ElasticController {
 
   @GetMapping(path = "/token-from-bot")
   public ResponseEntity<Object> getTokenBot(@RequestParam OAuthV2AccessRequest code) {
-    System.out.println("Hello, logs!");
-    log.error(code.getCode());
+    System.out.println("--== Hello, logs! /token-from-bot ==--");
+    log.error("--== Code OAuthV2AccessRequest ==--{}", code.getCode());
     App app = new App();
     try {
       app.client().oauthV2Access(code);

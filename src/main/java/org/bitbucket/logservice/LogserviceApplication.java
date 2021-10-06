@@ -14,8 +14,6 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
 public class LogserviceApplication {
 
   public static void main(String[] args) {
-    System.out.println("Hello, logs!");
-    log.error("-=My custom message");
     SpringApplication.run(LogserviceApplication.class, args);
   }
 
