@@ -37,7 +37,7 @@ public class SlackAppService {
       req.getPayload().getToken();
       if (channelId.contains(req.getPayload().getChannelId())) {
         return ctx.ack(r -> r.text(
-            "This channel already subscribe on this application '  " + req.getPayload().getUserId() +
+            "This channel already subscribe on this application ' " +
                 apiKeyEntity.getApplicationName() +
                 '\'').responseType(ResponseTypes.inChannel));
       }
