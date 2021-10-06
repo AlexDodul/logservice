@@ -6,9 +6,11 @@ import com.slack.api.model.Attachment;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bitbucket.logservice.entity.ElasticEntity;
+import org.bitbucket.logservice.repositories.ChannelRepo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 public class SlackService {
 
   private static final String NEW_LINE = "\n";
+  private final ChannelRepo channelRepo;
 
   @Value("${slack.token}")
   private String botToken;
@@ -39,7 +42,8 @@ public class SlackService {
       app.client().chatPostMessage(r -> r.attachments(
           List.of(Attachment.builder().fallback("Text").color(getColor(messageLevel)).text(message)
               .build()))
-          .token("zSvbmQH5WVfJVPt9PVxdUShC")
+          .token(channelRepo.findByChannelId(channelId)
+              .orElseThrow(() -> new EntityNotFoundException("Entity not found")).getAccessToken())
           .channel(channelId)
 
       );

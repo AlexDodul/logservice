@@ -25,12 +25,14 @@ import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bitbucket.logservice.entity.ApiKeyEntity;
+import org.bitbucket.logservice.entity.ChannelEntity;
 import org.bitbucket.logservice.entity.ElasticEntity;
 import org.bitbucket.logservice.payload.request.ApplicationNameRequest;
 import org.bitbucket.logservice.payload.request.BodyLogRequest;
 import org.bitbucket.logservice.payload.request.FilterRequest;
 import org.bitbucket.logservice.payload.response.ApiKeyResponse;
 import org.bitbucket.logservice.payload.response.LogResponse;
+import org.bitbucket.logservice.repositories.ChannelRepo;
 import org.bitbucket.logservice.services.ApiKeyService;
 import org.bitbucket.logservice.services.CsvExportService;
 import org.bitbucket.logservice.services.ElasticService;
@@ -65,6 +67,7 @@ public class ElasticController {
   private final ElasticService elasticService;
   private final ApiKeyService apiKeyService;
   private final CsvExportService csvExportService;
+  private final ChannelRepo channelRepo;
 
   @Operation(summary = "Get all apikey", description = "Method for generating a new ari key for a new application")
   @ApiResponses({
@@ -199,6 +202,7 @@ public class ElasticController {
         .build();
     try {
       OAuthV2AccessResponse oAuthV2AccessResponse = app.client().oauthV2Access(request);
+      this.channelRepo.save(new ChannelEntity(oAuthV2AccessResponse.getAuthedUser().getId(), oAuthV2AccessResponse.getAccessToken()));
       System.out.println("Access - Token  " + oAuthV2AccessResponse.getAccessToken());
       System.out.println("Get User ID  " + oAuthV2AccessResponse.getAuthedUser().getId());
     } catch (IOException | SlackApiException e) {

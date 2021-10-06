@@ -5,9 +5,12 @@ import com.slack.api.bolt.response.ResponseTypes;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.bitbucket.logservice.entity.ApiKeyEntity;
+import org.bitbucket.logservice.entity.ChannelEntity;
 import org.bitbucket.logservice.repositories.ApiKeyRepo;
+import org.bitbucket.logservice.repositories.ChannelRepo;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Service;
 public class SlackAppService {
 
   private final ApiKeyRepo repo;
+  private final ChannelRepo channelRepo;
 
   public SlashCommandHandler reg() {
     return (req, ctx) -> {
@@ -40,6 +44,10 @@ public class SlackAppService {
       channelId.add(req.getPayload().getChannelId());
       apiKeyEntity.setChannelId(channelId);
       repo.save(apiKeyEntity);
+      ChannelEntity channelEntity = channelRepo.findByUserId(req.getPayload().getUserId())
+          .orElseThrow(() -> new EntityNotFoundException("Entity not found"));
+      channelEntity.setChannelId(req.getPayload().getChannelId());
+      channelRepo.save(channelEntity);
 
       Object botId = req.getContext().getBotId();
       Object token = req.getContext().getBotToken();
