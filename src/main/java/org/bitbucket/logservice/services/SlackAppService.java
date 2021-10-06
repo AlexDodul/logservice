@@ -30,6 +30,7 @@ public class SlackAppService {
       if (Objects.isNull(channelId)) {
         channelId = new ArrayList<>();
       }
+      req.getPayload().getToken();
       if (channelId.contains(req.getPayload().getChannelId())) {
         return ctx.ack(r -> r.text(
             "This channel already subscribe on this application '" +
@@ -41,7 +42,7 @@ public class SlackAppService {
       repo.save(apiKeyEntity);
 
       return ctx.ack(r -> r
-          .text("Application '" + apiKeyEntity.getApplicationName() + "' registered successfully")
+          .text("Application '" + apiKeyEntity.getApplicationName() + "' registered successfully" + req.getPayload().getToken())
           .responseType(ResponseTypes.inChannel));
     };
   }
