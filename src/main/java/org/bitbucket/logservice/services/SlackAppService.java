@@ -33,17 +33,16 @@ public class SlackAppService {
       req.getPayload().getToken();
       if (channelId.contains(req.getPayload().getChannelId())) {
         return ctx.ack(r -> r.text(
-            "This channel already subscribe on this application '" +
+            "This channel already subscribe on this application '  " + ctx.getBotId() +
                 apiKeyEntity.getApplicationName() +
                 '\'').responseType(ResponseTypes.inChannel));
       }
       channelId.add(req.getPayload().getChannelId());
       apiKeyEntity.setChannelId(channelId);
       repo.save(apiKeyEntity);
-
       return ctx.ack(r -> r
           .text("Application '" + apiKeyEntity.getApplicationName() +
-              "' registered successfully     " + ctx.getBotToken())
+              "' registered successfully     " + ctx.getBotId())
           .responseType(ResponseTypes.inChannel));
     };
   }

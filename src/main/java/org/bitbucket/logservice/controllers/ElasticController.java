@@ -201,7 +201,7 @@ public class ElasticController {
     try {
       OAuthV2AccessResponse oAuthV2AccessResponse = app.client().oauthV2Access(request);
       System.out.println("botid  " + oAuthV2AccessResponse.getBotUserId());
-      System.out.println("token acc   " + oAuthV2AccessResponse);
+      System.out.println("token acc   " + oAuthV2AccessResponse.getAuthedUser());
     } catch (IOException | SlackApiException e) {
       log.error(e.getMessage());
     }
