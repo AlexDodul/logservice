@@ -19,4 +19,4 @@ slack:
   client-id: 2518902811235.2555532277206
   client-secret: 37940eeb699e8cc1259d44533e587ee9
 logging.level:
-  com.slack.api: DEBUG
+  com.slack.api: ERROR
