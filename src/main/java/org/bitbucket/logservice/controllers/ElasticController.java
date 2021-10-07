@@ -213,5 +213,6 @@ public class ElasticController {
     } catch (IOException | SlackApiException e) {
       log.error(e.getMessage());
     }
+    
   }
 }
