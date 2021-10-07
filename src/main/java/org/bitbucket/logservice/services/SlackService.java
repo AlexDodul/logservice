@@ -1,5 +1,11 @@
 package org.bitbucket.logservice.services;
 
+import static org.bitbucket.logservice.entity.Colors.BLUE;
+import static org.bitbucket.logservice.entity.Colors.GREEN;
+import static org.bitbucket.logservice.entity.Colors.GREY;
+import static org.bitbucket.logservice.entity.Colors.ORANGE;
+import static org.bitbucket.logservice.entity.Colors.RED;
+
 import com.slack.api.bolt.App;
 import com.slack.api.methods.SlackApiException;
 import com.slack.api.model.Attachment;
@@ -42,7 +48,6 @@ public class SlackService {
               .orElseThrow(() -> new EntityNotFoundException("Entity not found")).getAccessToken())
           .channel(channelId)
       );
-      System.out.println();
     } catch (IOException | SlackApiException e) {
       e.printStackTrace();
     }
@@ -51,15 +56,15 @@ public class SlackService {
   public String getColor(String messageLevel) {
     switch (messageLevel) {
       case "INFO":
-        return "#32CD32";
+        return GREEN.getMessage();
       case "DEBUG":
-        return "#1E90FF";
+        return BLUE.getMessage();
       case "WARN":
-        return "#FFD700";
+        return ORANGE.getMessage();
       case "ERROR":
-        return "#FF0000";
+        return RED.getMessage();
       default:
-        return "#DDDDDD";
+        return GREY.getMessage();
     }
   }
 
